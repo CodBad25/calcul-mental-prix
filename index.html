@@ -1061,7 +1061,33 @@
 
     <script>
         // ============ CONFIGURATION ============
-        const ITEMS = ['pain', 'croissant', 'baguette', 'magazine', 'stylo', 'gomme', 'cahier', 'livre', 'sandwich', 'boisson', 'jeu', 'pizza', 'muffin', 'jus', 'riz', 'lait', 'ticket', 'crayon', 't-shirt'];
+        const ITEMS = [
+            { sing: 'croissant', plur: 'croissants', art: 'un' },
+            { sing: 'baguette', plur: 'baguettes', art: 'une' },
+            { sing: 'stylo', plur: 'stylos', art: 'un' },
+            { sing: 'gomme', plur: 'gommes', art: 'une' },
+            { sing: 'cahier', plur: 'cahiers', art: 'un' },
+            { sing: 'livre', plur: 'livres', art: 'un' },
+            { sing: 'sandwich', plur: 'sandwichs', art: 'un' },
+            { sing: 'pizza', plur: 'pizzas', art: 'une' },
+            { sing: 'muffin', plur: 'muffins', art: 'un' },
+            { sing: 'crayon', plur: 'crayons', art: 'un' },
+            { sing: 'place de cinéma', plur: 'places de cinéma', art: 'une' },
+            { sing: 'bouteille d\'eau', plur: 'bouteilles d\'eau', art: 'une' },
+            { sing: 'pain au chocolat', plur: 'pains au chocolat', art: 'un' },
+            { sing: 'ticket de bus', plur: 'tickets de bus', art: 'un' },
+            { sing: 'timbre', plur: 'timbres', art: 'un' },
+            { sing: 'classeur', plur: 'classeurs', art: 'un' },
+        ];
+
+        function pickItem() {
+            return ITEMS[Math.floor(Math.random() * ITEMS.length)];
+        }
+
+        function pickItems(count) {
+            const shuffled = [...ITEMS].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, count);
+        }
 
         // ============ STATE ============
         let state = {
@@ -1106,10 +1132,6 @@
             return n.toFixed(2).replace('.', ',');
         }
 
-        function pickUnique(arr, count) {
-            const shuffled = [...arr].sort(() => Math.random() - 0.5);
-            return shuffled.slice(0, count);
-        }
 
         // ============ STORAGE ============
         function getStudentData(name) {
@@ -1237,33 +1259,33 @@
                 // Additions de prix — progressif
                 // Q1-5 : deux articles, prix en x,50 ou entiers
                 for (let i = 0; i < 5; i++) {
-                    const [item1, item2] = pickUnique(ITEMS, 2);
+                    const [a, b] = pickItems(2);
                     const p1 = nicePrice(0.50, 10, 0.50);
                     const p2 = nicePrice(0.50, 10, 0.50);
                     const total = roundToTwo(p1 + p2);
                     questions.push({
-                        text: `Un ${item1} à ${fmtPrice(p1)}€ et un ${item2} à ${fmtPrice(p2)}€. Total ?`,
+                        text: `${a.art.charAt(0).toUpperCase() + a.art.slice(1)} ${a.sing} à ${fmtPrice(p1)}€ et ${b.art} ${b.sing} à ${fmtPrice(p2)}€. Total ?`,
                         answer: fmtPrice(total) + '€'
                     });
                 }
                 // Q6-10 : quantité × prix ou deux articles en x,25
                 for (let i = 0; i < 5; i++) {
                     if (i % 2 === 0) {
-                        const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+                        const item = pickItem();
                         const qty = Math.floor(Math.random() * 3) + 2;
                         const price = nicePrice(0.50, 8, 0.25);
                         const total = roundToTwo(qty * price);
                         questions.push({
-                            text: `${qty} ${item}s à ${fmtPrice(price)}€ chacun. Total ?`,
+                            text: `${qty} ${item.plur} à ${fmtPrice(price)}€. Total ?`,
                             answer: fmtPrice(total) + '€'
                         });
                     } else {
-                        const [item1, item2] = pickUnique(ITEMS, 2);
+                        const [a, b] = pickItems(2);
                         const p1 = nicePrice(1, 15, 0.25);
                         const p2 = nicePrice(1, 12, 0.25);
                         const total = roundToTwo(p1 + p2);
                         questions.push({
-                            text: `Un ${item1} à ${fmtPrice(p1)}€ et un ${item2} à ${fmtPrice(p2)}€. Total ?`,
+                            text: `${a.art.charAt(0).toUpperCase() + a.art.slice(1)} ${a.sing} à ${fmtPrice(p1)}€ et ${b.art} ${b.sing} à ${fmtPrice(p2)}€. Total ?`,
                             answer: fmtPrice(total) + '€'
                         });
                     }
@@ -1283,7 +1305,7 @@
             } else if (seriesNum === 3) {
                 // Prix × quantité — progressif
                 for (let i = 0; i < 15; i++) {
-                    const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+                    const item = pickItem();
                     let qty, price;
                     if (i < 5) {
                         qty = Math.floor(Math.random() * 5) + 2;
@@ -1297,7 +1319,7 @@
                     }
                     const total = roundToTwo(qty * price);
                     questions.push({
-                        text: `${qty} ${item}s à ${fmtPrice(price)}€. Prix total ?`,
+                        text: `${qty} ${item.plur} à ${fmtPrice(price)}€. Prix total ?`,
                         answer: fmtPrice(total) + '€'
                     });
                 }
@@ -1305,7 +1327,7 @@
             } else if (seriesNum === 4) {
                 // Partager l'addition — progressif
                 for (let i = 0; i < 15; i++) {
-                    const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+                    const item = pickItem();
                     let divisor, unitPrice;
                     if (i < 5) {
                         divisor = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
@@ -1319,7 +1341,7 @@
                     }
                     const total = roundToTwo(divisor * unitPrice);
                     questions.push({
-                        text: `${fmtPrice(total)}€ pour ${divisor} ${item}s. Prix d'un ${item} ?`,
+                        text: `${fmtPrice(total)}€ pour ${divisor} ${item.plur}. Prix d'${item.art} ${item.sing} ?`,
                         answer: fmtPrice(unitPrice) + '€'
                     });
                 }
