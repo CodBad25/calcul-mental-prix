@@ -876,6 +876,7 @@
         <!-- ============ PRINT MODE ============ -->
         <div id="print-mode" class="mode-section active print-section">
             <div class="print-controls">
+                <button class="print-btn" onclick="generatePrintSheets()">Nouvelles questions</button>
                 <button class="print-btn" onclick="window.print()">Imprimer les fiches élèves</button>
                 <button class="print-btn" onclick="printTeacherKey()">Imprimer les réponses</button>
             </div>
@@ -899,439 +900,12 @@
                 </div>
             </div>
 
-            <!-- SÉRIE 1 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 1 — Rendre la monnaie (compléments)</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">On paie 3,50€ avec 5€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 7,20€ avec 10€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 12,80€ avec 20€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 4,60€ avec 5€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 0,75€ avec 1€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 16,50€ avec 20€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 8,90€ avec 10€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 23,40€ avec 50€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 1,35€ avec 2€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 45,70€ avec 50€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 6,25€ avec 10€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 99,50€ avec 100€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 2,85€ avec 5€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 37,60€ avec 50€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">On paie 14,15€ avec 20€. Combien rend-on ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
+            <!-- SÉRIES GÉNÉRÉES DYNAMIQUEMENT -->
+            <div id="print-series-container"></div>
 
-            <!-- SÉRIE 2 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 2 — Additions de prix</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">Un pain à 1,20€ et un croissant à 0,95€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Deux magazines à 3,50€ et 4,50€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un stylo à 2,30€ et une gomme à 0,70€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Trois articles : 5€, 3€ et 2€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un sandwich à 4,80€ et une boisson à 1,20€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Deux livres : 8,90€ et 11,10€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un cahier à 1,50€ et un classeur à 3,50€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Quatre baguettes à 1,10€ chacune. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un jeu à 15€ et un accessoire à 4,99€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Deux places de cinéma à 8,50€ chacune. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un kilo de pommes à 2,40€ et de bananes à 1,60€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Trois croissants à 1,15€ chacun. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un menu à 12,50€ et un dessert à 3,50€. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Deux paquets de gâteaux à 2,25€ chacun. Total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Un t-shirt à 9,99€ et une casquette à 5,01€. Total ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
+            <!-- SECTION ENSEIGNANT AVEC RÉPONSES -->
+            <div class="teacher-section" id="print-teacher-section"></div>
 
-            <!-- SÉRIE 3 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 3 — Prix × quantité</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">3 stylos à 1,50€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">5 cahiers à 2€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">4 croissants à 1,25€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">6 bouteilles d'eau à 0,50€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">2 pizzas à 8,50€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10 timbres à 1,16€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">7 baguettes à 1,10€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">3 places de cinéma à 9€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">8 œufs à 0,25€ pièce. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">12 muffins à 0,75€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">5 kilos de riz à 1,80€/kg. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">4 tickets de bus à 1,70€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">20 photocopies à 0,10€. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">3 litres de lait à 1,15€/L. Prix total ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">6 crayons à 0,45€. Prix total ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
-
-            <!-- SÉRIE 4 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 4 — Partager l'addition</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">12€ partagés entre 3 amis. Prix par ami ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">20€ partagés entre 4 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">15€ pour 5 croissants. Prix d'un croissant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">9,60€ pour 4 places. Prix d'une place ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">7,50€ pour 6 muffins. Prix d'un muffin ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">24€ partagés entre 8 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">18€ pour 3 BD. Prix d'une BD ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10€ pour 4 jus. Prix d'un jus ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">30€ partagés entre 6 amis. Prix par ami ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">2,40€ pour 3 baguettes. Prix d'une baguette ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">36€ pour 12 roses. Prix d'une rose ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">8€ partagés entre 5 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">21€ pour 7 pains au chocolat. Prix d'un pain ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">4,50€ pour 3 pommes. Prix d'une pomme ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">100€ partagés entre 8 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
-
-            <!-- SÉRIE 5 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 5 — Les bonnes affaires : pourcentages</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">10% de 50€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">50% de 30€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">25% de 40€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10% de 120€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">50% de 15€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">25% de 80€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10% de 35€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">20% de 100€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">50% de 9€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10% de 7€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">25% de 200€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">50% de 42€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10% de 15,50€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">20% de 50€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">75% de 40€. Montant ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
-
-            <!-- SÉRIE 6 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 6 — Prix à l'unité</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">3 kg de pommes pour 6€. Prix au kg ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">2 L de jus pour 3€. Prix au L ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">5 kg de riz pour 10€. Prix au kg ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">4 croissants pour 5€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">6 yaourts pour 3€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">2 kg de tomates pour 5€. Prix au kg ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10 œufs pour 3,50€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">3 L de lait pour 2,70€. Prix au L ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">8 crayons pour 4€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">4 kg de carottes pour 3€. Prix au kg ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">5 stylos pour 6,25€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">2 kg de pommes pour 4,50€. Prix au kg ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">6 bouteilles d'eau pour 3€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">12 muffins pour 9€. Prix unitaire ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">3 kg de bananes pour 4,50€. Prix au kg ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
-
-            <!-- SÉRIE 7 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 7 — Fractions de prix</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">La moitié de 30€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le quart de 80€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le tiers de 27€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Les trois quarts de 40€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Les deux tiers de 18€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">La moitié de 15€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le quart de 100€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le tiers de 45€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Les trois quarts de 120€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Les deux tiers de 30€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le cinquième de 35€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">La moitié de 7,50€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le quart de 60€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le tiers de 9,90€. Montant ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Les quatre cinquièmes de 50€. Montant ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
-
-            <!-- SÉRIE 8 -->
-            <div class="series">
-                <div class="series-header">
-                    <div class="series-title">Série 8 — Le mix final (synthèse)</div>
-                    <div class="series-timer">3 minutes</div>
-                </div>
-                <div class="questions-grid">
-                    <div class="question"><div class="question-text">8,60€ + 1,40€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Monnaie sur 20€ si on paie 13,50€ ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">4 × 2,50€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">10% de 90€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">15€ ÷ 3 = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Le quart de 44€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">50% de 18€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">3,50€ + 6,50€ + 5€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">6 croissants à 1,10€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Monnaie sur 50€ si on paie 32,80€ ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">25% de 60€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">12€ ÷ 5 = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">Les deux tiers de 24€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">7 × 1,50€ = ?</div><div class="answer-box"></div></div>
-                    <div class="question"><div class="question-text">20% de 35€ = ?</div><div class="answer-box"></div></div>
-                </div>
-                <div class="series-footer">
-                    <span></span>
-                    <div class="score-box">Score : ____ / 15</div>
-                </div>
-            </div>
-
-            <!-- TEACHER SECTION -->
-            <div class="teacher-section">
-                <div class="teacher-title">Fiche Enseignant — Réponses</div>
-
-                <div class="objectives">
-                    <h3>Objectifs pédagogiques (Programme 2025)</h3>
-                    <p><strong>Automatismes :</strong> Effectuer 15 opérations en 3 minutes sur le thème des prix.</p>
-                    <p style="margin-top: 8px;">Cette ressource entraîne les élèves à développer un calcul mental fluide et automatisé en contexte significatif (prix, monnaie, réductions). Elle prépare à la maîtrise du calcul mental demandée au DNB et au cycle 4.</p>
-                </div>
-
-                <div class="advice-section">
-                    <h3>Conseils de passation</h3>
-                    <ul>
-                        <li><strong>Lecture :</strong> Lisez les questions à haute voix, ou laissez les élèves lire silencieusement (adapter selon le niveau).</li>
-                        <li><strong>Timing :</strong> 3 minutes strictes par série. Utilisez un minuteur visible.</li>
-                        <li><strong>Format réponse :</strong> Les élèves écrivent uniquement le résultat, pas les étapes de calcul.</li>
-                        <li><strong>Correction immédiate :</strong> Corriger à chaud pour un feedback optimal et une remédiation rapide.</li>
-                        <li><strong>Progression :</strong> Séries 1-2 en début d'année (automatismes basiques). Séries 7-8 en fin d'année (synthèse et approfondissement).</li>
-                        <li><strong>Fréquence :</strong> 1-2 séries par semaine en ouverture de cours (5-10 min) ou comme activité diagnostique.</li>
-                    </ul>
-                </div>
-
-                <div class="strategies-section">
-                    <h3>Stratégies mentales à enseigner</h3>
-                    <ul>
-                        <li><strong>Compléments :</strong> Rendre la monnaie en passant par la dizaine ou la centaine. Ex : 7,20€ → 8€ (0,80€) → 10€ (2€) = 2,80€.</li>
-                        <li><strong>Pourcentages courants :</strong> 10% = ÷10 ; 50% = ÷2 ; 25% = ÷4 ; 20% = ÷5.</li>
-                        <li><strong>Multiplication par décomposition :</strong> 7 × 1,50 = 7 × 1 + 7 × 0,50 = 7 + 3,50 = 10,50.</li>
-                        <li><strong>Prix à l'unité :</strong> total ÷ quantité. Maîtriser les divisions simples (÷2, ÷4, ÷5).</li>
-                        <li><strong>Fractions :</strong> Lier aux décimaux : 1/2 = 0,5 ; 1/4 = 0,25. Décomposer si besoin.</li>
-                        <li><strong>Doubles et moitiés :</strong> Cas particuliers à connaître par automatisme.</li>
-                    </ul>
-                </div>
-
-                <table class="answers-table">
-                    <thead>
-                        <tr>
-                            <th>Série 1</th>
-                            <th>Série 2</th>
-                            <th>Série 3</th>
-                            <th>Série 4</th>
-                            <th>Série 5</th>
-                            <th>Série 6</th>
-                            <th>Série 7</th>
-                            <th>Série 8</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="question-number">1.</span> 1,50€</td>
-                            <td><span class="question-number">1.</span> 2,15€</td>
-                            <td><span class="question-number">1.</span> 4,50€</td>
-                            <td><span class="question-number">1.</span> 4€</td>
-                            <td><span class="question-number">1.</span> 5€</td>
-                            <td><span class="question-number">1.</span> 2€</td>
-                            <td><span class="question-number">1.</span> 15€</td>
-                            <td><span class="question-number">1.</span> 10€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">2.</span> 2,80€</td>
-                            <td><span class="question-number">2.</span> 8€</td>
-                            <td><span class="question-number">2.</span> 10€</td>
-                            <td><span class="question-number">2.</span> 5€</td>
-                            <td><span class="question-number">2.</span> 15€</td>
-                            <td><span class="question-number">2.</span> 1,50€</td>
-                            <td><span class="question-number">2.</span> 20€</td>
-                            <td><span class="question-number">2.</span> 6,50€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">3.</span> 7,20€</td>
-                            <td><span class="question-number">3.</span> 3€</td>
-                            <td><span class="question-number">3.</span> 5€</td>
-                            <td><span class="question-number">3.</span> 3€</td>
-                            <td><span class="question-number">3.</span> 10€</td>
-                            <td><span class="question-number">3.</span> 2€</td>
-                            <td><span class="question-number">3.</span> 15€</td>
-                            <td><span class="question-number">3.</span> 10€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">4.</span> 0,40€</td>
-                            <td><span class="question-number">4.</span> 10€</td>
-                            <td><span class="question-number">4.</span> 7,50€</td>
-                            <td><span class="question-number">4.</span> 2,40€</td>
-                            <td><span class="question-number">4.</span> 12€</td>
-                            <td><span class="question-number">4.</span> 1,25€</td>
-                            <td><span class="question-number">4.</span> 30€</td>
-                            <td><span class="question-number">4.</span> 9€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">5.</span> 0,25€</td>
-                            <td><span class="question-number">5.</span> 6€</td>
-                            <td><span class="question-number">5.</span> 17€</td>
-                            <td><span class="question-number">5.</span> 1,25€</td>
-                            <td><span class="question-number">5.</span> 7,50€</td>
-                            <td><span class="question-number">5.</span> 0,50€</td>
-                            <td><span class="question-number">5.</span> 12€</td>
-                            <td><span class="question-number">5.</span> 5€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">6.</span> 3,50€</td>
-                            <td><span class="question-number">6.</span> 20€</td>
-                            <td><span class="question-number">6.</span> 11,60€</td>
-                            <td><span class="question-number">6.</span> 3€</td>
-                            <td><span class="question-number">6.</span> 20€</td>
-                            <td><span class="question-number">6.</span> 2,50€</td>
-                            <td><span class="question-number">6.</span> 7,50€</td>
-                            <td><span class="question-number">6.</span> 11€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">7.</span> 1,10€</td>
-                            <td><span class="question-number">7.</span> 5€</td>
-                            <td><span class="question-number">7.</span> 7,70€</td>
-                            <td><span class="question-number">7.</span> 6€</td>
-                            <td><span class="question-number">7.</span> 3,50€</td>
-                            <td><span class="question-number">7.</span> 0,35€</td>
-                            <td><span class="question-number">7.</span> 25€</td>
-                            <td><span class="question-number">7.</span> 15€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">8.</span> 26,60€</td>
-                            <td><span class="question-number">8.</span> 4,40€</td>
-                            <td><span class="question-number">8.</span> 27€</td>
-                            <td><span class="question-number">8.</span> 2,50€</td>
-                            <td><span class="question-number">8.</span> 4,50€</td>
-                            <td><span class="question-number">8.</span> 0,90€</td>
-                            <td><span class="question-number">8.</span> 90€</td>
-                            <td><span class="question-number">8.</span> 15€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">9.</span> 0,65€</td>
-                            <td><span class="question-number">9.</span> 19,99€</td>
-                            <td><span class="question-number">9.</span> 2€</td>
-                            <td><span class="question-number">9.</span> 5€</td>
-                            <td><span class="question-number">9.</span> 4,50€</td>
-                            <td><span class="question-number">9.</span> 0,50€</td>
-                            <td><span class="question-number">9.</span> 90€</td>
-                            <td><span class="question-number">9.</span> 6,60€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">10.</span> 4,30€</td>
-                            <td><span class="question-number">10.</span> 17€</td>
-                            <td><span class="question-number">10.</span> 9€</td>
-                            <td><span class="question-number">10.</span> 0,80€</td>
-                            <td><span class="question-number">10.</span> 0,70€</td>
-                            <td><span class="question-number">10.</span> 0,75€</td>
-                            <td><span class="question-number">10.</span> 20€</td>
-                            <td><span class="question-number">10.</span> 17,20€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">11.</span> 3,75€</td>
-                            <td><span class="question-number">11.</span> 4€</td>
-                            <td><span class="question-number">11.</span> 9€</td>
-                            <td><span class="question-number">11.</span> 3€</td>
-                            <td><span class="question-number">11.</span> 50€</td>
-                            <td><span class="question-number">11.</span> 1,25€</td>
-                            <td><span class="question-number">11.</span> 7€</td>
-                            <td><span class="question-number">11.</span> 15€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">12.</span> 0,50€</td>
-                            <td><span class="question-number">12.</span> 3,45€</td>
-                            <td><span class="question-number">12.</span> 6,80€</td>
-                            <td><span class="question-number">12.</span> 1,60€</td>
-                            <td><span class="question-number">12.</span> 21€</td>
-                            <td><span class="question-number">12.</span> 2,25€</td>
-                            <td><span class="question-number">12.</span> 15€</td>
-                            <td><span class="question-number">12.</span> 2,40€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">13.</span> 2,15€</td>
-                            <td><span class="question-number">13.</span> 16€</td>
-                            <td><span class="question-number">13.</span> 2€</td>
-                            <td><span class="question-number">13.</span> 3€</td>
-                            <td><span class="question-number">13.</span> 1,55€</td>
-                            <td><span class="question-number">13.</span> 0,50€</td>
-                            <td><span class="question-number">13.</span> 15€</td>
-                            <td><span class="question-number">13.</span> 16€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">14.</span> 12,40€</td>
-                            <td><span class="question-number">14.</span> 4,50€</td>
-                            <td><span class="question-number">14.</span> 3,45€</td>
-                            <td><span class="question-number">14.</span> 1,50€</td>
-                            <td><span class="question-number">14.</span> 10€</td>
-                            <td><span class="question-number">14.</span> 0,75€</td>
-                            <td><span class="question-number">14.</span> 3,30€</td>
-                            <td><span class="question-number">14.</span> 10,50€</td>
-                        </tr>
-                        <tr>
-                            <td><span class="question-number">15.</span> 5,85€</td>
-                            <td><span class="question-number">15.</span> 15€</td>
-                            <td><span class="question-number">15.</span> 2,70€</td>
-                            <td><span class="question-number">15.</span> 12,50€</td>
-                            <td><span class="question-number">15.</span> 30€</td>
-                            <td><span class="question-number">15.</span> 1,50€</td>
-                            <td><span class="question-number">15.</span> 40€</td>
-                            <td><span class="question-number">15.</span> 7€</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
 
         <!-- ============ INTERACTIVE MODE ============ -->
@@ -1879,11 +1453,100 @@
         }
 
         // ============ PRINT MODE ============
+        const SERIES_TITLES = [
+            'Série 1 — Rendre la monnaie',
+            'Série 2 — Additions de prix',
+            'Série 3 — Prix × quantité',
+            'Série 4 — Partager l\'addition',
+            'Série 5 — Les bonnes affaires : pourcentages',
+            'Série 6 — Prix à l\'unité',
+            'Série 7 — Fractions de prix',
+            'Série 8 — Le mix final (synthèse)'
+        ];
+
+        // Store generated answers for teacher section
+        let printAnswers = [];
+
+        function generatePrintSheets() {
+            printAnswers = [];
+            const container = document.getElementById('print-series-container');
+            const teacherContainer = document.getElementById('print-teacher-section');
+
+            let seriesHtml = '';
+            for (let s = 1; s <= 8; s++) {
+                const questions = generateQuestions(s);
+                printAnswers.push(questions.map(q => q.answer));
+
+                let questionsHtml = '';
+                questions.forEach(q => {
+                    questionsHtml += `<div class="question"><div class="question-text">${q.text}</div><div class="answer-box"></div></div>`;
+                });
+
+                seriesHtml += `
+                    <div class="series">
+                        <div class="series-header">
+                            <div class="series-title">${SERIES_TITLES[s - 1]}</div>
+                            <div class="series-timer">3 minutes</div>
+                        </div>
+                        <div class="questions-grid">${questionsHtml}</div>
+                        <div class="series-footer">
+                            <span></span>
+                            <div class="score-box">Score : ____ / 15</div>
+                        </div>
+                    </div>`;
+            }
+            container.innerHTML = seriesHtml;
+
+            // Generate teacher section
+            let teacherHtml = `
+                <div class="teacher-title">Fiche Enseignant — Réponses</div>
+                <div class="objectives">
+                    <h3>Objectifs pédagogiques (Programme 2025)</h3>
+                    <p><strong>Automatismes :</strong> Effectuer 15 opérations en 3 minutes sur le thème des prix.</p>
+                    <p style="margin-top: 8px;">Cette ressource entraîne les élèves à développer un calcul mental fluide et automatisé en contexte significatif (prix, monnaie, réductions). Elle prépare à la maîtrise du calcul mental demandée au DNB et au cycle 4.</p>
+                </div>
+                <div class="advice-section">
+                    <h3>Conseils de passation</h3>
+                    <ul>
+                        <li><strong>Lecture :</strong> Lisez les questions à haute voix, ou laissez les élèves lire silencieusement (adapter selon le niveau).</li>
+                        <li><strong>Timing :</strong> 3 minutes strictes par série. Utilisez un minuteur visible.</li>
+                        <li><strong>Format réponse :</strong> Les élèves écrivent uniquement le résultat, pas les étapes de calcul.</li>
+                        <li><strong>Correction immédiate :</strong> Corriger à chaud pour un feedback optimal et une remédiation rapide.</li>
+                        <li><strong>Progression :</strong> Séries 1-2 en début d'année. Séries 7-8 en fin d'année.</li>
+                        <li><strong>Fréquence :</strong> 1-2 séries par semaine en ouverture de cours (5-10 min).</li>
+                    </ul>
+                </div>
+                <div class="strategies-section">
+                    <h3>Stratégies mentales à enseigner</h3>
+                    <ul>
+                        <li><strong>Compléments :</strong> Rendre la monnaie en passant par la dizaine. Ex : 7,20€ → 8€ (0,80€) → 10€ (2€) = 2,80€.</li>
+                        <li><strong>Pourcentages courants :</strong> 10% = ÷10 ; 50% = ÷2 ; 25% = ÷4 ; 20% = ÷5.</li>
+                        <li><strong>Multiplication par décomposition :</strong> 7 × 1,50 = 7 × 1 + 7 × 0,50 = 10,50.</li>
+                        <li><strong>Prix à l'unité :</strong> total ÷ quantité. Maîtriser les divisions simples.</li>
+                        <li><strong>Fractions :</strong> Lier aux décimaux : 1/2 = 0,5 ; 1/4 = 0,25.</li>
+                        <li><strong>Doubles et moitiés :</strong> Cas particuliers à connaître par automatisme.</li>
+                    </ul>
+                </div>
+                <table class="answers-table">
+                    <thead><tr>${SERIES_TITLES.map((_, i) => `<th>Série ${i + 1}</th>`).join('')}</tr></thead>
+                    <tbody>`;
+
+            for (let q = 0; q < 15; q++) {
+                teacherHtml += '<tr>';
+                for (let s = 0; s < 8; s++) {
+                    teacherHtml += `<td><span class="question-number">${q + 1}.</span> ${printAnswers[s][q]}</td>`;
+                }
+                teacherHtml += '</tr>';
+            }
+            teacherHtml += '</tbody></table>';
+            teacherContainer.innerHTML = teacherHtml;
+        }
+
         function printTeacherKey() {
             const printArea = document.createElement('div');
             printArea.style.display = 'none';
 
-            const teacherSection = document.querySelector('.teacher-section').cloneNode(true);
+            const teacherSection = document.getElementById('print-teacher-section').cloneNode(true);
             printArea.appendChild(teacherSection);
             document.body.appendChild(printArea);
 
@@ -1937,6 +1600,9 @@
             link.download = 'suivi_calcul_mental.csv';
             link.click();
         }
+
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', generatePrintSheets);
     </script>
 </body>
 </html>
