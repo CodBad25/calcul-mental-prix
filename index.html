@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcul Mental — Prix (6e)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            color: #222;
+            line-height: 1.4;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+
+        /* ============ NAVIGATION ============ */
+        .nav-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #e0e7ff;
+            color: #1e40af;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.active {
+            background: #1e40af;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            background: #1e40af;
+            color: white;
+        }
+
+        .mode-section {
+            display: none;
+        }
+
+        .mode-section.active {
+            display: block;
+        }
+
+        /* ============ PRINT MODE ============ */
+        .print-section {
+            /* print styles below */
+        }
+
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .header-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        .header-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-field label {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 4px;
+        }
+
+        .header-field input {
+            border: none;
+            border-bottom: 1px solid #999;
+            padding: 4px 0;
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        .series {
+            page-break-inside: avoid;
+            margin-bottom: 30px;
+            background: #fafafa;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .series-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 8px;
+        }
+
+        .series-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .series-timer {
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            background: white;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .question-text {
+            flex: 1;
+            line-height: 1.3;
+        }
+
+        .answer-box {
+            width: 45px;
+            height: 22px;
+            border: 1px solid #999;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .series-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #666;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+        }
+
+        .score-box {
+            border: 1px solid #999;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .teacher-section {
+            page-break-before: always;
+            margin-top: 40px;
+        }
+
+        .teacher-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 10px;
+        }
+
+        .objectives {
+            background: #e0e7ff;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #1e40af;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .objectives h3 {
+            font-size: 13px;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .advice-section {
+            background: #fef3c7;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #d97706;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .advice-section h3 {
+            font-size: 13px;
+            color: #b45309;
+            margin-bottom: 8px;
+        }
+
+        .advice-section ul {
+            margin-left: 20px;
+        }
+
+        .advice-section li {
+            margin-bottom: 4px;
+        }
+
+        .strategies-section {
+            background: #dcfce7;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #16a34a;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .strategies-section h3 {
+            font-size: 13px;
+            color: #15803d;
+            margin-bottom: 8px;
+        }
+
+        .strategies-section ul {
+            margin-left: 20px;
+        }
+
+        .strategies-section li {
+            margin-bottom: 4px;
+        }
+
+        .answers-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+
+        .answers-table thead {
+            background: #1e40af;
+            color: white;
+            font-weight: 600;
+        }
+
+        .answers-table th {
+            padding: 8px 6px;
+            text-align: center;
+            border: 1px solid #999;
+            font-size: 11px;
+        }
+
+        .answers-table td {
+            padding: 6px 4px;
+            text-align: center;
+            border: 1px solid #ddd;
+            height: 24px;
+        }
+
+        .answers-table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .question-number {
+            font-weight: 600;
+            color: #666;
+        }
+
+        /* ============ INTERACTIVE MODE ============ */
+        .student-name-form {
+            background: #e0e7ff;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .student-name-form h2 {
+            font-size: 18px;
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .student-name-form input {
+            padding: 10px 15px;
+            border: 2px solid #1e40af;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        .student-name-form button {
+            padding: 10px 25px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .student-name-form button:hover {
+            background: #1e3a8a;
+        }
+
+        .series-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .series-card {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .series-card:hover {
+            border-color: #1e40af;
+            background: #e0e7ff;
+        }
+
+        .series-card.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        .series-card-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .series-card-score {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .interactive-quiz {
+            margin-bottom: 30px;
+        }
+
+        .timer-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1e40af;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-display.warning {
+            color: #d97706;
+        }
+
+        .timer-display.critical {
+            color: #dc2626;
+        }
+
+        .question-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .quiz-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-option-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .quiz-option-btn.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        .quiz-option-btn:hover {
+            border-color: #1e40af;
+        }
+
+        .quiz-questions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-question.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .quiz-q-text {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .quiz-q-input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .quiz-q-input:focus {
+            outline: none;
+            border-color: #1e40af;
+        }
+
+        .submit-btn {
+            padding: 12px 30px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            align-self: center;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #15803d;
+        }
+
+        .submit-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            background: #e0e7ff;
+            padding: 30px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .results-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a, #10b981);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .correction-section {
+            margin-bottom: 30px;
+        }
+
+        .correction-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .correction-item.correct {
+            border-left-color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        .correction-item.incorrect {
+            border-left-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .correction-q {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .correction-detail {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .student-profile {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .student-profile h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .series-progress {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .series-progress-card {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            text-align: center;
+            border: 2px solid #ddd;
+        }
+
+        .series-progress-card.red {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .series-progress-card.orange {
+            border-color: #d97706;
+            background: #fef3c7;
+        }
+
+        .series-progress-card.green {
+            border-color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        .series-progress-label {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .series-progress-score {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* ============ TEACHER DASHBOARD ============ */
+        .teacher-login {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .teacher-login input {
+            padding: 10px 15px;
+            border: 2px solid #d97706;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        .teacher-login button {
+            padding: 10px 25px;
+            background: #d97706;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .teacher-login button:hover {
+            background: #b45309;
+        }
+
+        .dashboard-content {
+            display: none;
+        }
+
+        .dashboard-content.active {
+            display: block;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .students-table thead {
+            background: #1e40af;
+            color: white;
+            font-weight: 600;
+        }
+
+        .students-table th {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #999;
+        }
+
+        .students-table td {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+        }
+
+        .students-table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .score-cell {
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .score-cell.red {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .score-cell.orange {
+            color: #d97706;
+            background: #fef3c7;
+        }
+
+        .score-cell.green {
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        /* ============ PRINT STYLES ============ */
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 10mm;
+                background: white;
+            }
+
+            .nav-bar, .print-controls, .student-name-form, .series-selector,
+            .interactive-quiz, .student-profile, .teacher-login,
+            .dashboard-content {
+                display: none;
+            }
+
+            .print-section {
+                display: block;
+            }
+
+            .series {
+                page-break-inside: avoid;
+            }
+
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .series {
+                margin-bottom: 20px;
+                padding: 10px;
+            }
+
+            .header-field input {
+                border: none;
+                border-bottom: 1px solid #000;
+            }
+
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .header-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .answer-box {
+                align-self: flex-end;
+                margin-top: 4px;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+
+            .series-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quiz-questions {
+                grid-template-columns: 1fr;
+            }
+
+            .timer-display {
+                font-size: 32px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .print-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .print-btn {
+            padding: 10px 20px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .print-btn:hover {
+            background: #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- NAVIGATION -->
+        <div class="nav-bar">
+            <button class="nav-btn active" onclick="switchMode('print')">Fiche imprimable</button>
+            <button class="nav-btn" onclick="switchMode('interactive')">S'entraîner</button>
+            <button class="nav-btn" onclick="switchMode('teacher')">Suivi enseignant</button>
+        </div>
+
+        <!-- ============ PRINT MODE ============ -->
+        <div id="print-mode" class="mode-section active print-section">
+            <div class="print-controls">
+                <button class="print-btn" onclick="window.print()">Imprimer les fiches élèves</button>
+                <button class="print-btn" onclick="printTeacherKey()">Imprimer les réponses</button>
+            </div>
+
+            <!-- STUDENT SHEETS -->
+            <div class="header">
+                <h1>Calcul Mental — Prix (6e)</h1>
+                <div class="header-fields">
+                    <div class="header-field">
+                        <label>Nom :</label>
+                        <input type="text" placeholder="">
+                    </div>
+                    <div class="header-field">
+                        <label>Classe :</label>
+                        <input type="text" placeholder="">
+                    </div>
+                    <div class="header-field">
+                        <label>Date :</label>
+                        <input type="text" placeholder="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 1 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 1 — Rendre la monnaie (compléments)</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">On paie 3,50€ avec 5€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 7,20€ avec 10€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 12,80€ avec 20€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 4,60€ avec 5€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 0,75€ avec 1€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 16,50€ avec 20€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 8,90€ avec 10€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 23,40€ avec 50€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 1,35€ avec 2€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 45,70€ avec 50€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 6,25€ avec 10€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 99,50€ avec 100€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 2,85€ avec 5€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 37,60€ avec 50€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">On paie 14,15€ avec 20€. Combien rend-on ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 2 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 2 — Additions de prix</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">Un pain à 1,20€ et un croissant à 0,95€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Deux magazines à 3,50€ et 4,50€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un stylo à 2,30€ et une gomme à 0,70€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Trois articles : 5€, 3€ et 2€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un sandwich à 4,80€ et une boisson à 1,20€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Deux livres : 8,90€ et 11,10€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un cahier à 1,50€ et un classeur à 3,50€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Quatre baguettes à 1,10€ chacune. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un jeu à 15€ et un accessoire à 4,99€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Deux places de cinéma à 8,50€ chacune. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un kilo de pommes à 2,40€ et de bananes à 1,60€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Trois croissants à 1,15€ chacun. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un menu à 12,50€ et un dessert à 3,50€. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Deux paquets de gâteaux à 2,25€ chacun. Total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Un t-shirt à 9,99€ et une casquette à 5,01€. Total ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 3 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 3 — Prix × quantité</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">3 stylos à 1,50€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">5 cahiers à 2€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">4 croissants à 1,25€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">6 bouteilles d'eau à 0,50€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">2 pizzas à 8,50€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10 timbres à 1,16€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">7 baguettes à 1,10€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">3 places de cinéma à 9€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">8 œufs à 0,25€ pièce. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">12 muffins à 0,75€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">5 kilos de riz à 1,80€/kg. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">4 tickets de bus à 1,70€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">20 photocopies à 0,10€. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">3 litres de lait à 1,15€/L. Prix total ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">6 crayons à 0,45€. Prix total ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 4 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 4 — Partager l'addition</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">12€ partagés entre 3 amis. Prix par ami ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">20€ partagés entre 4 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">15€ pour 5 croissants. Prix d'un croissant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">9,60€ pour 4 places. Prix d'une place ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">7,50€ pour 6 muffins. Prix d'un muffin ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">24€ partagés entre 8 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">18€ pour 3 BD. Prix d'une BD ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10€ pour 4 jus. Prix d'un jus ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">30€ partagés entre 6 amis. Prix par ami ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">2,40€ pour 3 baguettes. Prix d'une baguette ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">36€ pour 12 roses. Prix d'une rose ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">8€ partagés entre 5 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">21€ pour 7 pains au chocolat. Prix d'un pain ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">4,50€ pour 3 pommes. Prix d'une pomme ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">100€ partagés entre 8 personnes. Prix par personne ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 5 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 5 — Les bonnes affaires : pourcentages</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">10% de 50€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">50% de 30€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">25% de 40€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10% de 120€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">50% de 15€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">25% de 80€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10% de 35€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">20% de 100€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">50% de 9€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10% de 7€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">25% de 200€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">50% de 42€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10% de 15,50€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">20% de 50€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">75% de 40€. Montant ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 6 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 6 — Prix à l'unité</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">3 kg de pommes pour 6€. Prix au kg ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">2 L de jus pour 3€. Prix au L ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">5 kg de riz pour 10€. Prix au kg ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">4 croissants pour 5€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">6 yaourts pour 3€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">2 kg de tomates pour 5€. Prix au kg ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10 œufs pour 3,50€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">3 L de lait pour 2,70€. Prix au L ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">8 crayons pour 4€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">4 kg de carottes pour 3€. Prix au kg ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">5 stylos pour 6,25€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">2 kg de pommes pour 4,50€. Prix au kg ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">6 bouteilles d'eau pour 3€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">12 muffins pour 9€. Prix unitaire ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">3 kg de bananes pour 4,50€. Prix au kg ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 7 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 7 — Fractions de prix</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">La moitié de 30€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le quart de 80€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le tiers de 27€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Les trois quarts de 40€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Les deux tiers de 18€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">La moitié de 15€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le quart de 100€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le tiers de 45€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Les trois quarts de 120€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Les deux tiers de 30€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le cinquième de 35€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">La moitié de 7,50€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le quart de 60€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le tiers de 9,90€. Montant ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Les quatre cinquièmes de 50€. Montant ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- SÉRIE 8 -->
+            <div class="series">
+                <div class="series-header">
+                    <div class="series-title">Série 8 — Le mix final (synthèse)</div>
+                    <div class="series-timer">3 minutes</div>
+                </div>
+                <div class="questions-grid">
+                    <div class="question"><div class="question-text">8,60€ + 1,40€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Monnaie sur 20€ si on paie 13,50€ ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">4 × 2,50€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">10% de 90€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">15€ ÷ 3 = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Le quart de 44€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">50% de 18€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">3,50€ + 6,50€ + 5€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">6 croissants à 1,10€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Monnaie sur 50€ si on paie 32,80€ ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">25% de 60€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">12€ ÷ 5 = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">Les deux tiers de 24€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">7 × 1,50€ = ?</div><div class="answer-box"></div></div>
+                    <div class="question"><div class="question-text">20% de 35€ = ?</div><div class="answer-box"></div></div>
+                </div>
+                <div class="series-footer">
+                    <span></span>
+                    <div class="score-box">Score : ____ / 15</div>
+                </div>
+            </div>
+
+            <!-- TEACHER SECTION -->
+            <div class="teacher-section">
+                <div class="teacher-title">Fiche Enseignant — Réponses</div>
+
+                <div class="objectives">
+                    <h3>Objectifs pédagogiques (Programme 2025)</h3>
+                    <p><strong>Automatismes :</strong> Effectuer 15 opérations en 3 minutes sur le thème des prix.</p>
+                    <p style="margin-top: 8px;">Cette ressource entraîne les élèves à développer un calcul mental fluide et automatisé en contexte significatif (prix, monnaie, réductions). Elle prépare à la maîtrise du calcul mental demandée au DNB et au cycle 4.</p>
+                </div>
+
+                <div class="advice-section">
+                    <h3>Conseils de passation</h3>
+                    <ul>
+                        <li><strong>Lecture :</strong> Lisez les questions à haute voix, ou laissez les élèves lire silencieusement (adapter selon le niveau).</li>
+                        <li><strong>Timing :</strong> 3 minutes strictes par série. Utilisez un minuteur visible.</li>
+                        <li><strong>Format réponse :</strong> Les élèves écrivent uniquement le résultat, pas les étapes de calcul.</li>
+                        <li><strong>Correction immédiate :</strong> Corriger à chaud pour un feedback optimal et une remédiation rapide.</li>
+                        <li><strong>Progression :</strong> Séries 1-2 en début d'année (automatismes basiques). Séries 7-8 en fin d'année (synthèse et approfondissement).</li>
+                        <li><strong>Fréquence :</strong> 1-2 séries par semaine en ouverture de cours (5-10 min) ou comme activité diagnostique.</li>
+                    </ul>
+                </div>
+
+                <div class="strategies-section">
+                    <h3>Stratégies mentales à enseigner</h3>
+                    <ul>
+                        <li><strong>Compléments :</strong> Rendre la monnaie en passant par la dizaine ou la centaine. Ex : 7,20€ → 8€ (0,80€) → 10€ (2€) = 2,80€.</li>
+                        <li><strong>Pourcentages courants :</strong> 10% = ÷10 ; 50% = ÷2 ; 25% = ÷4 ; 20% = ÷5.</li>
+                        <li><strong>Multiplication par décomposition :</strong> 7 × 1,50 = 7 × 1 + 7 × 0,50 = 7 + 3,50 = 10,50.</li>
+                        <li><strong>Prix à l'unité :</strong> total ÷ quantité. Maîtriser les divisions simples (÷2, ÷4, ÷5).</li>
+                        <li><strong>Fractions :</strong> Lier aux décimaux : 1/2 = 0,5 ; 1/4 = 0,25. Décomposer si besoin.</li>
+                        <li><strong>Doubles et moitiés :</strong> Cas particuliers à connaître par automatisme.</li>
+                    </ul>
+                </div>
+
+                <table class="answers-table">
+                    <thead>
+                        <tr>
+                            <th>Série 1</th>
+                            <th>Série 2</th>
+                            <th>Série 3</th>
+                            <th>Série 4</th>
+                            <th>Série 5</th>
+                            <th>Série 6</th>
+                            <th>Série 7</th>
+                            <th>Série 8</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="question-number">1.</span> 1,50€</td>
+                            <td><span class="question-number">1.</span> 2,15€</td>
+                            <td><span class="question-number">1.</span> 4,50€</td>
+                            <td><span class="question-number">1.</span> 4€</td>
+                            <td><span class="question-number">1.</span> 5€</td>
+                            <td><span class="question-number">1.</span> 2€</td>
+                            <td><span class="question-number">1.</span> 15€</td>
+                            <td><span class="question-number">1.</span> 10€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">2.</span> 2,80€</td>
+                            <td><span class="question-number">2.</span> 8€</td>
+                            <td><span class="question-number">2.</span> 10€</td>
+                            <td><span class="question-number">2.</span> 5€</td>
+                            <td><span class="question-number">2.</span> 15€</td>
+                            <td><span class="question-number">2.</span> 1,50€</td>
+                            <td><span class="question-number">2.</span> 20€</td>
+                            <td><span class="question-number">2.</span> 6,50€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">3.</span> 7,20€</td>
+                            <td><span class="question-number">3.</span> 3€</td>
+                            <td><span class="question-number">3.</span> 5€</td>
+                            <td><span class="question-number">3.</span> 3€</td>
+                            <td><span class="question-number">3.</span> 10€</td>
+                            <td><span class="question-number">3.</span> 2€</td>
+                            <td><span class="question-number">3.</span> 15€</td>
+                            <td><span class="question-number">3.</span> 10€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">4.</span> 0,40€</td>
+                            <td><span class="question-number">4.</span> 10€</td>
+                            <td><span class="question-number">4.</span> 7,50€</td>
+                            <td><span class="question-number">4.</span> 2,40€</td>
+                            <td><span class="question-number">4.</span> 12€</td>
+                            <td><span class="question-number">4.</span> 1,25€</td>
+                            <td><span class="question-number">4.</span> 30€</td>
+                            <td><span class="question-number">4.</span> 9€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">5.</span> 0,25€</td>
+                            <td><span class="question-number">5.</span> 6€</td>
+                            <td><span class="question-number">5.</span> 17€</td>
+                            <td><span class="question-number">5.</span> 1,25€</td>
+                            <td><span class="question-number">5.</span> 7,50€</td>
+                            <td><span class="question-number">5.</span> 0,50€</td>
+                            <td><span class="question-number">5.</span> 12€</td>
+                            <td><span class="question-number">5.</span> 5€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">6.</span> 3,50€</td>
+                            <td><span class="question-number">6.</span> 20€</td>
+                            <td><span class="question-number">6.</span> 11,60€</td>
+                            <td><span class="question-number">6.</span> 3€</td>
+                            <td><span class="question-number">6.</span> 20€</td>
+                            <td><span class="question-number">6.</span> 2,50€</td>
+                            <td><span class="question-number">6.</span> 7,50€</td>
+                            <td><span class="question-number">6.</span> 11€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">7.</span> 1,10€</td>
+                            <td><span class="question-number">7.</span> 5€</td>
+                            <td><span class="question-number">7.</span> 7,70€</td>
+                            <td><span class="question-number">7.</span> 6€</td>
+                            <td><span class="question-number">7.</span> 3,50€</td>
+                            <td><span class="question-number">7.</span> 0,35€</td>
+                            <td><span class="question-number">7.</span> 25€</td>
+                            <td><span class="question-number">7.</span> 15€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">8.</span> 26,60€</td>
+                            <td><span class="question-number">8.</span> 4,40€</td>
+                            <td><span class="question-number">8.</span> 27€</td>
+                            <td><span class="question-number">8.</span> 2,50€</td>
+                            <td><span class="question-number">8.</span> 4,50€</td>
+                            <td><span class="question-number">8.</span> 0,90€</td>
+                            <td><span class="question-number">8.</span> 90€</td>
+                            <td><span class="question-number">8.</span> 15€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">9.</span> 0,65€</td>
+                            <td><span class="question-number">9.</span> 19,99€</td>
+                            <td><span class="question-number">9.</span> 2€</td>
+                            <td><span class="question-number">9.</span> 5€</td>
+                            <td><span class="question-number">9.</span> 4,50€</td>
+                            <td><span class="question-number">9.</span> 0,50€</td>
+                            <td><span class="question-number">9.</span> 90€</td>
+                            <td><span class="question-number">9.</span> 6,60€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">10.</span> 4,30€</td>
+                            <td><span class="question-number">10.</span> 17€</td>
+                            <td><span class="question-number">10.</span> 9€</td>
+                            <td><span class="question-number">10.</span> 0,80€</td>
+                            <td><span class="question-number">10.</span> 0,70€</td>
+                            <td><span class="question-number">10.</span> 0,75€</td>
+                            <td><span class="question-number">10.</span> 20€</td>
+                            <td><span class="question-number">10.</span> 17,20€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">11.</span> 3,75€</td>
+                            <td><span class="question-number">11.</span> 4€</td>
+                            <td><span class="question-number">11.</span> 9€</td>
+                            <td><span class="question-number">11.</span> 3€</td>
+                            <td><span class="question-number">11.</span> 50€</td>
+                            <td><span class="question-number">11.</span> 1,25€</td>
+                            <td><span class="question-number">11.</span> 7€</td>
+                            <td><span class="question-number">11.</span> 15€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">12.</span> 0,50€</td>
+                            <td><span class="question-number">12.</span> 3,45€</td>
+                            <td><span class="question-number">12.</span> 6,80€</td>
+                            <td><span class="question-number">12.</span> 1,60€</td>
+                            <td><span class="question-number">12.</span> 21€</td>
+                            <td><span class="question-number">12.</span> 2,25€</td>
+                            <td><span class="question-number">12.</span> 15€</td>
+                            <td><span class="question-number">12.</span> 2,40€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">13.</span> 2,15€</td>
+                            <td><span class="question-number">13.</span> 16€</td>
+                            <td><span class="question-number">13.</span> 2€</td>
+                            <td><span class="question-number">13.</span> 3€</td>
+                            <td><span class="question-number">13.</span> 1,55€</td>
+                            <td><span class="question-number">13.</span> 0,50€</td>
+                            <td><span class="question-number">13.</span> 15€</td>
+                            <td><span class="question-number">13.</span> 16€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">14.</span> 12,40€</td>
+                            <td><span class="question-number">14.</span> 4,50€</td>
+                            <td><span class="question-number">14.</span> 3,45€</td>
+                            <td><span class="question-number">14.</span> 1,50€</td>
+                            <td><span class="question-number">14.</span> 10€</td>
+                            <td><span class="question-number">14.</span> 0,75€</td>
+                            <td><span class="question-number">14.</span> 3,30€</td>
+                            <td><span class="question-number">14.</span> 10,50€</td>
+                        </tr>
+                        <tr>
+                            <td><span class="question-number">15.</span> 5,85€</td>
+                            <td><span class="question-number">15.</span> 15€</td>
+                            <td><span class="question-number">15.</span> 2,70€</td>
+                            <td><span class="question-number">15.</span> 12,50€</td>
+                            <td><span class="question-number">15.</span> 30€</td>
+                            <td><span class="question-number">15.</span> 1,50€</td>
+                            <td><span class="question-number">15.</span> 40€</td>
+                            <td><span class="question-number">15.</span> 7€</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============ INTERACTIVE MODE ============ -->
+        <div id="interactive-mode" class="mode-section">
+            <div class="student-name-form">
+                <h2>Bienvenue au calcul mental !</h2>
+                <input type="text" id="studentName" placeholder="Entre ton prénom">
+                <button onclick="startInteractive()">Commencer</button>
+            </div>
+
+            <div id="interactive-content" style="display: none;">
+                <div class="student-profile" id="student-profile">
+                    <h3>Ton profil — <span id="profileName"></span></h3>
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Total d'exercices</div>
+                            <div class="stat-value" id="totalAttempts">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Meilleur score</div>
+                            <div class="stat-value" id="bestScoreOverall">0/15</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #1e40af; margin-bottom: 10px;">Tes meilleures notes par série :</h4>
+                        <div class="series-progress" id="seriesProgress"></div>
+                    </div>
+                </div>
+
+                <h2 style="color: #1e40af; margin: 30px 0 20px 0;">Choisis une série à travailler</h2>
+                <div class="series-selector" id="seriesSelector"></div>
+
+                <div id="quiz-area" style="display: none;">
+                    <div class="timer-section">
+                        <div>
+                            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Temps restant</div>
+                            <div class="timer-display" id="timerDisplay">3:00</div>
+                        </div>
+                        <div class="question-count" id="questionCount"></div>
+                    </div>
+
+                    <div class="quiz-options">
+                        <button class="quiz-option-btn active" onclick="setDisplayMode('all')">Afficher tous les questions</button>
+                        <button class="quiz-option-btn" onclick="setDisplayMode('one')">Une question à la fois</button>
+                    </div>
+
+                    <div class="quiz-questions" id="quizQuestions"></div>
+
+                    <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Terminé</button>
+                </div>
+
+                <div id="results-area" style="display: none;">
+                    <div class="results-section">
+                        <div class="results-score" id="finalScore">15/15</div>
+                        <div class="results-message" id="resultMessage"></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 100%;">100%</div>
+                        </div>
+                    </div>
+
+                    <div class="correction-section" id="correctionSection"></div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="submit-btn" onclick="restartQuiz()" style="background: #1e40af; margin-right: 10px;">Recommencer</button>
+                        <button class="submit-btn" onclick="changeSeries()" style="background: #666;">Changer de série</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TEACHER DASHBOARD ============ -->
+        <div id="teacher-mode" class="mode-section">
+            <div id="dashboard-content" class="dashboard-content" style="display: block;">
+                <h2 style="color: #1e40af; margin-bottom: 20px;">Suivi de classe</h2>
+
+                <div style="margin-bottom: 20px;">
+                    <button class="submit-btn" style="background: #1e40af; margin-right: 10px;" onclick="exportCSV()">Exporter en CSV</button>
+                </div>
+
+                <table class="students-table" id="dashboardTable">
+                    <thead>
+                        <tr>
+                            <th>Élève</th>
+                            <th>Série 1</th>
+                            <th>Série 2</th>
+                            <th>Série 3</th>
+                            <th>Série 4</th>
+                            <th>Série 5</th>
+                            <th>Série 6</th>
+                            <th>Série 7</th>
+                            <th>Série 8</th>
+                            <th>Tentatives</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============ CONFIGURATION ============
+        const ITEMS = ['pain', 'croissant', 'baguette', 'magazine', 'stylo', 'gomme', 'cahier', 'livre', 'sandwich', 'boisson', 'jeu', 'pizza', 'muffin', 'jus', 'riz', 'lait', 'ticket', 'crayon', 't-shirt'];
+
+        // ============ STATE ============
+        let state = {
+            currentStudent: '',
+            currentSeries: null,
+            currentQuestions: [],
+            userAnswers: [],
+            timerInterval: null,
+            timeRemaining: 180,
+            displayMode: 'all',
+            correctAnswers: [],
+            submitted: false
+        };
+
+        // ============ UTILITIES ============
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(mode + '-mode').classList.add('active');
+            event.target.classList.add('active');
+
+            if (mode === 'interactive') {
+                loadStudentProfile();
+            }
+            if (mode === 'teacher') {
+                refreshDashboard();
+            }
+        }
+
+        function roundToTwo(num) {
+            return Math.round(num * 100) / 100;
+        }
+
+        // ============ STORAGE ============
+        function getStudentData(name) {
+            const data = localStorage.getItem('mathprix_calcul_students');
+            if (!data) return { attempts: [], bestScores: {} };
+            const allData = JSON.parse(data);
+            return allData[name] || { attempts: [], bestScores: {} };
+        }
+
+        function saveStudentData(name, data) {
+            let allData = {};
+            const existing = localStorage.getItem('mathprix_calcul_students');
+            if (existing) allData = JSON.parse(existing);
+            allData[name] = data;
+            localStorage.setItem('mathprix_calcul_students', JSON.stringify(allData));
+        }
+
+        function getAllStudents() {
+            const data = localStorage.getItem('mathprix_calcul_students');
+            return data ? JSON.parse(data) : {};
+        }
+
+        // ============ INTERACTIVE MODE ============
+        function startInteractive() {
+            const name = document.getElementById('studentName').value.trim();
+            if (!name) {
+                alert('Veuillez entrer votre prénom');
+                return;
+            }
+            state.currentStudent = name;
+            document.getElementById('interactive-content').style.display = 'block';
+            document.querySelector('.student-name-form').style.display = 'none';
+            loadStudentProfile();
+            renderSeriesSelector();
+        }
+
+        function loadStudentProfile() {
+            if (!state.currentStudent) return;
+
+            const studentData = getStudentData(state.currentStudent);
+            document.getElementById('profileName').textContent = state.currentStudent;
+            document.getElementById('totalAttempts').textContent = studentData.attempts.length;
+
+            if (studentData.attempts.length > 0) {
+                const bestAttempt = Math.max(...studentData.attempts.map(a => a.score));
+                document.getElementById('bestScoreOverall').textContent = bestAttempt + '/15';
+            }
+
+            const progressHtml = Array.from({length: 8}, (_, i) => {
+                const seriesNum = i + 1;
+                const bestScore = studentData.bestScores[seriesNum] || null;
+                let colorClass = 'red';
+                if (bestScore !== null) {
+                    if (bestScore >= 12) colorClass = 'green';
+                    else if (bestScore >= 8) colorClass = 'orange';
+                }
+                return `
+                    <div class="series-progress-card ${colorClass}">
+                        <div class="series-progress-label">Série ${seriesNum}</div>
+                        <div class="series-progress-score">${bestScore !== null ? bestScore : '-'}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('seriesProgress').innerHTML = progressHtml;
+        }
+
+        function renderSeriesSelector() {
+            const html = Array.from({length: 8}, (_, i) => {
+                const seriesNum = i + 1;
+                const studentData = getStudentData(state.currentStudent);
+                const bestScore = studentData.bestScores[seriesNum];
+                const scoreText = bestScore !== undefined ? `Meilleur: ${bestScore}/15` : 'Pas encore tentée';
+                return `
+                    <button class="series-card" onclick="selectSeries(${seriesNum})">
+                        <div class="series-card-title">Série ${seriesNum}</div>
+                        <div class="series-card-score">${scoreText}</div>
+                    </button>
+                `;
+            }).join('');
+            document.getElementById('seriesSelector').innerHTML = html;
+        }
+
+        function selectSeries(seriesNum) {
+            state.currentSeries = seriesNum;
+            state.currentQuestions = generateQuestions(seriesNum);
+            state.userAnswers = new Array(15).fill('');
+            state.submitted = false;
+            state.timeRemaining = 180;
+
+            document.getElementById('seriesSelector').style.display = 'none';
+            document.getElementById('student-profile').style.display = 'none';
+            document.getElementById('quiz-area').style.display = 'block';
+            document.getElementById('results-area').style.display = 'none';
+
+            renderQuizQuestions();
+            document.getElementById('questionCount').textContent = `Série ${seriesNum} · 15 questions`;
+            startTimer();
+        }
+
+        function generateQuestions(seriesNum) {
+            const questions = [];
+
+            if (seriesNum === 1) {
+                for (let i = 0; i < 15; i++) {
+                    const payment = roundToTwo(Math.random() * 98 + 0.5);
+                    const billOptions = [5, 10, 20, 50, 100];
+                    let bill = billOptions.find(b => b > payment);
+                    if (!bill) bill = 100;
+
+                    const change = roundToTwo(bill - payment);
+                    questions.push({
+                        text: `On paie ${payment.toFixed(2).replace('.', ',')}€ avec ${bill}€. Combien rend-on ?`,
+                        answer: change.toFixed(2).replace('.', ',') + '€'
+                    });
+                }
+            } else if (seriesNum === 2) {
+                for (let i = 0; i < 15; i++) {
+                    const itemCount = Math.floor(Math.random() * 3) + 2;
+                    let total = 0;
+                    let itemList = [];
+                    for (let j = 0; j < itemCount; j++) {
+                        const price = roundToTwo((Math.random() * 19.5 + 0.5));
+                        itemList.push(price);
+                        total += price;
+                    }
+                    total = roundToTwo(total);
+
+                    const itemNames = Array.from({length: itemCount}, () => ITEMS[Math.floor(Math.random() * ITEMS.length)]);
+                    let text = itemNames.map((name, idx) => `${name} ${itemList[idx].toFixed(2).replace('.', ',').replace(/,0$/, '')}€`).join(', ');
+                    text += '. Total ?';
+
+                    questions.push({
+                        text: text,
+                        answer: total.toFixed(2).replace('.', ',') + '€'
+                    });
+                }
+            } else if (seriesNum === 3) {
+                for (let i = 0; i < 15; i++) {
+                    const qty = Math.floor(Math.random() * 11) + 2;
+                    const price = roundToTwo(Math.random() * 14.5 + 0.25);
+                    const total = roundToTwo(qty * price);
+                    const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+
+                    questions.push({
+                        text: `${qty} ${item}s à ${price.toFixed(2).replace('.', ',').replace(/,0$/, '')}€. Prix total ?`,
+                        answer: total.toFixed(2).replace('.', ',') + '€'
+                    });
+                }
+            } else if (seriesNum === 4) {
+                for (let i = 0; i < 15; i++) {
+                    const divisors = [2, 3, 4, 5, 6, 8, 12];
+                    const divisor = divisors[Math.floor(Math.random() * divisors.length)];
+                    const unitPrice = roundToTwo(Math.random() * 14 + 1);
+                    const total = roundToTwo(divisor * unitPrice);
+
+                    questions.push({
+                        text: `${total.toFixed(2).replace('.', ',').replace(/,0$/, '')}€ pour ${divisor} articles. Prix par article ?`,
+                        answer: unitPrice.toFixed(2).replace('.', ',') + '€'
+                    });
+                }
+            } else if (seriesNum === 5) {
+                for (let i = 0; i < 15; i++) {
+                    const percentages = [10, 20, 25, 50, 75];
+                    const pct = percentages[Math.floor(Math.random() * percentages.length)];
+                    let amount = Math.floor(Math.random() * 190 + 10);
+
+                    if (pct === 10) amount = Math.floor(amount / 10) * 10;
+                    if (pct === 25) amount = Math.floor(amount / 4) * 4;
+
+                    const result = roundToTwo(amount * pct / 100);
+
+                    questions.push({
+                        text: `${pct}% de ${amount}€. Montant ?`,
+                        answer: result.toFixed(2).replace('.', ',').replace(/,0$/, '') + '€'
+                    });
+                }
+            } else if (seriesNum === 6) {
+                for (let i = 0; i < 15; i++) {
+                    const divisors = [2, 3, 4, 5, 6];
+                    const divisor = divisors[Math.floor(Math.random() * divisors.length)];
+                    const unitPrice = roundToTwo(Math.random() * 9.5 + 0.5);
+                    const total = roundToTwo(divisor * unitPrice);
+                    const units = ['kg', 'L', 'unité'];
+                    const unit = units[Math.floor(Math.random() * units.length)];
+
+                    questions.push({
+                        text: `${divisor} ${unit} pour ${total.toFixed(2).replace('.', ',').replace(/,0$/, '')}€. Prix par ${unit} ?`,
+                        answer: unitPrice.toFixed(2).replace('.', ',') + '€'
+                    });
+                }
+            } else if (seriesNum === 7) {
+                for (let i = 0; i < 15; i++) {
+                    const fractions = [
+                        {num: 1, den: 2, text: 'La moitié de'},
+                        {num: 1, den: 3, text: 'Le tiers de'},
+                        {num: 2, den: 3, text: 'Les deux tiers de'},
+                        {num: 1, den: 4, text: 'Le quart de'},
+                        {num: 3, den: 4, text: 'Les trois quarts de'},
+                        {num: 1, den: 5, text: 'Le cinquième de'}
+                    ];
+                    const frac = fractions[Math.floor(Math.random() * fractions.length)];
+                    let amount = Math.floor(Math.random() * 190 + 10);
+                    while (Math.round(amount * frac.num / frac.den) !== amount * frac.num / frac.den) {
+                        amount = Math.floor(Math.random() * 190 + 10);
+                    }
+                    const result = roundToTwo(amount * frac.num / frac.den);
+
+                    questions.push({
+                        text: `${frac.text} ${amount}€. Montant ?`,
+                        answer: result.toFixed(2).replace('.', ',').replace(/,0$/, '') + '€'
+                    });
+                }
+            } else if (seriesNum === 8) {
+                const allTypes = [
+                    () => {
+                        const a = roundToTwo(Math.random() * 98 + 0.5);
+                        const b = roundToTwo(100 - a);
+                        return { text: `${a.toFixed(2).replace('.', ',')}€ + ${b.toFixed(2).replace('.', ',')}€ = ?`, answer: '100€' };
+                    },
+                    () => {
+                        const payment = roundToTwo(Math.random() * 48 + 0.5);
+                        const bill = 50;
+                        const change = roundToTwo(bill - payment);
+                        return { text: `Monnaie sur 50€ si on paie ${payment.toFixed(2).replace('.', ',')}€ ?`, answer: change.toFixed(2).replace('.', ',') + '€' };
+                    },
+                    () => {
+                        const qty = Math.floor(Math.random() * 10) + 2;
+                        const price = roundToTwo(Math.random() * 14.5 + 0.5);
+                        const total = roundToTwo(qty * price);
+                        return { text: `${qty} × ${price.toFixed(2).replace('.', ',')}€ = ?`, answer: total.toFixed(2).replace('.', ',') + '€' };
+                    },
+                    () => {
+                        const amount = Math.floor(Math.random() * 190 + 10);
+                        const result = roundToTwo(amount * 0.1);
+                        return { text: `10% de ${amount}€ = ?`, answer: result.toFixed(2).replace('.', ',').replace(/,0$/, '') + '€' };
+                    }
+                ];
+
+                for (let i = 0; i < 15; i++) {
+                    const typeIdx = i % allTypes.length;
+                    questions.push(allTypes[typeIdx]());
+                }
+            }
+
+            return questions;
+        }
+
+        function renderQuizQuestions() {
+            const container = document.getElementById('quizQuestions');
+            const displayOne = state.displayMode === 'one';
+
+            const html = state.currentQuestions.map((q, idx) => {
+                const classes = displayOne ? 'quiz-question' : 'quiz-question';
+                const display = displayOne && idx !== 0 ? 'none' : 'flex';
+                return `
+                    <div class="${classes}" style="display: ${display}" data-idx="${idx}">
+                        <div class="quiz-q-text">${idx + 1}. ${q.text}</div>
+                        <input class="quiz-q-input" type="text" data-idx="${idx}" value="${state.userAnswers[idx]}"
+                            onchange="state.userAnswers[${idx}] = this.value">
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        function setDisplayMode(mode) {
+            state.displayMode = mode;
+            document.querySelectorAll('.quiz-option-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderQuizQuestions();
+        }
+
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            state.timeRemaining = 180;
+
+            state.timerInterval = setInterval(() => {
+                state.timeRemaining--;
+                updateTimerDisplay();
+
+                if (state.timeRemaining <= 0) {
+                    clearInterval(state.timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(state.timeRemaining / 60);
+            const secs = state.timeRemaining % 60;
+            const display = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+            const timerEl = document.getElementById('timerDisplay');
+            timerEl.textContent = display;
+
+            if (state.timeRemaining < 30) {
+                timerEl.classList.add('critical');
+                timerEl.classList.remove('warning');
+            } else if (state.timeRemaining < 60) {
+                timerEl.classList.add('warning');
+                timerEl.classList.remove('critical');
+            } else {
+                timerEl.classList.remove('warning', 'critical');
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(state.timerInterval);
+            state.submitted = true;
+
+            state.correctAnswers = state.currentQuestions.map(q => q.answer);
+
+            let score = 0;
+            state.userAnswers.forEach((answer, idx) => {
+                const correct = normalizeAnswer(state.correctAnswers[idx]);
+                const userAnswer = normalizeAnswer(answer);
+                if (correct === userAnswer) score++;
+            });
+
+            const studentData = getStudentData(state.currentStudent);
+            const seriesNum = state.currentSeries;
+
+            if (!studentData.bestScores[seriesNum] || score > studentData.bestScores[seriesNum]) {
+                studentData.bestScores[seriesNum] = score;
+            }
+
+            studentData.attempts.push({
+                date: new Date().toISOString().split('T')[0],
+                series: seriesNum,
+                score: score,
+                total: 15,
+                time: getTimeString()
+            });
+
+            saveStudentData(state.currentStudent, studentData);
+
+            showResults(score);
+            loadStudentProfile();
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase().replace(/\s/g, '').replace('€', '').replace(',', '.');
+        }
+
+        function getTimeString() {
+            const elapsed = 180 - state.timeRemaining;
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function showResults(score) {
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('results-area').style.display = 'block';
+
+            const percent = Math.round(score / 15 * 100);
+            document.getElementById('finalScore').textContent = `${score}/15`;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressFill').textContent = percent + '%';
+
+            let message = '';
+            if (score === 15) message = 'Parfait ! Excellente performance !';
+            else if (score >= 12) message = 'Très bien ! Bravo !';
+            else if (score >= 8) message = 'Bien ! Continue tes efforts.';
+            else if (score >= 5) message = 'À retravailler. Persévère !';
+            else message = 'Continue ton entraînement !';
+
+            document.getElementById('resultMessage').textContent = message;
+
+            const correctionHtml = state.currentQuestions.map((q, idx) => {
+                const correct = normalizeAnswer(state.correctAnswers[idx]);
+                const userAnswer = normalizeAnswer(state.userAnswers[idx]);
+                const isCorrect = correct === userAnswer;
+                const className = isCorrect ? 'correct' : 'incorrect';
+
+                return `
+                    <div class="correction-item ${className}">
+                        <div class="correction-q">${idx + 1}. ${q.text}</div>
+                        <div class="correction-detail">
+                            Réponse: <strong>${state.correctAnswers[idx]}</strong>
+                            ${!isCorrect ? ` · Tu as répondu: <strong>${state.userAnswers[idx] || '-'}</strong>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('correctionSection').innerHTML = correctionHtml;
+        }
+
+        function restartQuiz() {
+            state.currentQuestions = generateQuestions(state.currentSeries);
+            state.userAnswers = new Array(15).fill('');
+            state.submitted = false;
+
+            document.getElementById('quiz-area').style.display = 'block';
+            document.getElementById('results-area').style.display = 'none';
+
+            renderQuizQuestions();
+            startTimer();
+        }
+
+        function changeSeries() {
+            document.getElementById('seriesSelector').style.display = 'grid';
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('results-area').style.display = 'none';
+            renderSeriesSelector();
+        }
+
+        // ============ PRINT MODE ============
+        function printTeacherKey() {
+            const printArea = document.createElement('div');
+            printArea.style.display = 'none';
+
+            const teacherSection = document.querySelector('.teacher-section').cloneNode(true);
+            printArea.appendChild(teacherSection);
+            document.body.appendChild(printArea);
+
+            window.print();
+            document.body.removeChild(printArea);
+        }
+
+        // ============ TEACHER DASHBOARD ============
+        function refreshDashboard() {
+            const allStudents = getAllStudents();
+            const tbody = document.getElementById('dashboardBody');
+
+            const rows = Object.entries(allStudents).map(([name, data]) => {
+                const cells = [name];
+                for (let series = 1; series <= 8; series++) {
+                    const bestScore = data.bestScores[series];
+                    let cellClass = '';
+                    if (bestScore !== undefined) {
+                        if (bestScore >= 12) cellClass = 'green';
+                        else if (bestScore >= 8) cellClass = 'orange';
+                        else cellClass = 'red';
+                        cells.push(`<span class="score-cell ${cellClass}">${bestScore}</span>`);
+                    } else {
+                        cells.push('-');
+                    }
+                }
+                cells.push(data.attempts.length);
+                return `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
+            }).join('');
+
+            tbody.innerHTML = rows;
+        }
+
+        function exportCSV() {
+            const allStudents = getAllStudents();
+            const rows = [['Élève', 'Série', 'Meilleur score', 'Tentatives', 'Dernière date']];
+
+            Object.entries(allStudents).forEach(([name, data]) => {
+                for (let series = 1; series <= 8; series++) {
+                    const bestScore = data.bestScores[series] || '-';
+                    const attempts = data.attempts.filter(a => a.series === series).length;
+                    const lastAttempt = data.attempts.filter(a => a.series === series).pop();
+                    const lastDate = lastAttempt ? lastAttempt.date : '-';
+                    rows.push([name, `Série ${series}`, bestScore, attempts, lastDate]);
+                }
+            });
+
+            const csv = rows.map(r => r.join(',')).join('\n');
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            link.download = 'suivi_calcul_mental.csv';
+            link.click();
+        }
+    </script>
+</body>
+</html>
