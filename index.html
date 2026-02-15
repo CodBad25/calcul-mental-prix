@@ -763,36 +763,67 @@
                 background: white;
                 margin: 0;
                 padding: 0;
+                font-size: 11px;
             }
 
             .container {
                 max-width: 100%;
                 margin: 0;
-                padding: 10mm;
+                padding: 0;
                 background: white;
             }
 
-            .nav-bar, .print-controls, .series-chips, .student-name-form, .series-selector,
+            .nav-bar, .print-controls, .student-name-form, .series-selector,
             .interactive-quiz, .student-profile, .teacher-login,
-            .dashboard-content {
-                display: none;
+            .dashboard-content, #interactive-mode, #teacher-mode {
+                display: none !important;
             }
 
-            .print-section {
-                display: block;
+            .mode-section.print-section {
+                display: block !important;
+            }
+
+            .header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+                margin-bottom: 10px;
             }
 
             .series {
                 page-break-inside: avoid;
+                margin-bottom: 15px;
+                padding: 8px;
+                border: 1px solid #ccc;
+                background: #fafafa;
             }
 
-            .header {
-                margin-bottom: 20px;
+            .questions-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
             }
 
-            .series {
-                margin-bottom: 20px;
-                padding: 10px;
+            .question {
+                font-size: 10px;
+                padding: 5px;
+            }
+
+            .answer-box {
+                width: 40px;
+                height: 20px;
+                border: 1px solid #666;
+            }
+
+            .question-number {
+                font-size: 8px;
+                padding: 1px 4px;
+            }
+
+            .teacher-section {
+                page-break-before: always;
             }
 
             .header-field input {
@@ -802,36 +833,76 @@
 
             @page {
                 size: A4;
-                margin: 10mm;
+                margin: 8mm;
             }
         }
 
         /* ============ RESPONSIVE ============ */
         @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .nav-bar {
+                flex-direction: row;
+                gap: 4px;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+
+            .nav-btn {
+                flex: 1;
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+
+            .print-controls {
+                padding: 10px;
+            }
+
+            .controls-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .controls-actions {
+                width: 100%;
+            }
+
+            .controls-actions .print-btn {
+                flex: 1;
+                text-align: center;
+                font-size: 11px;
+                padding: 8px 6px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
             .header-fields {
                 grid-template-columns: 1fr;
             }
 
             .questions-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
             }
 
             .question {
-                flex-direction: column;
-                align-items: flex-start;
+                font-size: 10px;
+                padding: 6px;
             }
 
             .answer-box {
-                align-self: flex-end;
-                margin-top: 4px;
+                width: 35px;
+                height: 18px;
             }
 
-            .nav-bar {
-                flex-direction: column;
-            }
-
-            .nav-btn {
-                width: 100%;
+            .series {
+                padding: 10px;
+                margin-bottom: 15px;
             }
 
             .series-selector {
@@ -842,6 +913,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .timer-section {
+                padding: 10px;
+            }
+
             .timer-display {
                 font-size: 32px;
             }
@@ -849,43 +924,89 @@
             .profile-stats {
                 grid-template-columns: 1fr;
             }
+
+            .student-name-form input {
+                width: 150px;
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+
+            .student-name-form button {
+                width: 100%;
+            }
+
+            .teacher-section {
+                overflow-x: auto;
+            }
+
+            .answers-table {
+                font-size: 10px;
+            }
         }
 
         .print-controls {
-            display: flex;
-            gap: 10px;
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
             margin-bottom: 20px;
+            border: 1px solid #c7d2fe;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .controls-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e40af;
+            white-space: nowrap;
+        }
+
+        .controls-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .print-btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: #1e40af;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+        }
+
+        .print-btn.secondary {
+            background: white;
+            color: #1e40af;
+            border: 2px solid #1e40af;
         }
 
         .print-btn:hover {
-            background: #1e3a8a;
+            opacity: 0.85;
         }
 
         .series-chips {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             flex-wrap: wrap;
         }
 
         .series-chip {
-            padding: 6px 14px;
-            border: 2px solid #ddd;
+            padding: 4px 12px;
+            border: 2px solid #c7d2fe;
             background: white;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             transition: all 0.15s;
             color: #666;
         }
@@ -913,22 +1034,24 @@
         <!-- ============ PRINT MODE ============ -->
         <div id="print-mode" class="mode-section active print-section">
             <div class="print-controls">
-                <div style="margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #1e40af;">Séries à imprimer :</div>
-                <div class="series-chips" id="seriesChips">
-                    <button class="series-chip active" data-series="all" onclick="toggleSeriesChip(this)">Toutes</button>
-                    <button class="series-chip active" data-series="1" onclick="toggleSeriesChip(this)">S1</button>
-                    <button class="series-chip active" data-series="2" onclick="toggleSeriesChip(this)">S2</button>
-                    <button class="series-chip active" data-series="3" onclick="toggleSeriesChip(this)">S3</button>
-                    <button class="series-chip active" data-series="4" onclick="toggleSeriesChip(this)">S4</button>
-                    <button class="series-chip active" data-series="5" onclick="toggleSeriesChip(this)">S5</button>
-                    <button class="series-chip active" data-series="6" onclick="toggleSeriesChip(this)">S6</button>
-                    <button class="series-chip active" data-series="7" onclick="toggleSeriesChip(this)">S7</button>
-                    <button class="series-chip active" data-series="8" onclick="toggleSeriesChip(this)">S8</button>
+                <div class="controls-row">
+                    <div class="controls-label">Séries :</div>
+                    <div class="series-chips" id="seriesChips">
+                        <button class="series-chip active" data-series="all" onclick="toggleSeriesChip(this)">Toutes</button>
+                        <button class="series-chip active" data-series="1" onclick="toggleSeriesChip(this)">S1</button>
+                        <button class="series-chip active" data-series="2" onclick="toggleSeriesChip(this)">S2</button>
+                        <button class="series-chip active" data-series="3" onclick="toggleSeriesChip(this)">S3</button>
+                        <button class="series-chip active" data-series="4" onclick="toggleSeriesChip(this)">S4</button>
+                        <button class="series-chip active" data-series="5" onclick="toggleSeriesChip(this)">S5</button>
+                        <button class="series-chip active" data-series="6" onclick="toggleSeriesChip(this)">S6</button>
+                        <button class="series-chip active" data-series="7" onclick="toggleSeriesChip(this)">S7</button>
+                        <button class="series-chip active" data-series="8" onclick="toggleSeriesChip(this)">S8</button>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button class="print-btn" onclick="generatePrintSheets()">Nouvelles questions</button>
-                    <button class="print-btn" onclick="window.print()">Imprimer les fiches élèves</button>
-                    <button class="print-btn" onclick="printTeacherKey()">Imprimer les réponses</button>
+                <div class="controls-actions">
+                    <button class="print-btn secondary" onclick="generatePrintSheets()">Nouvelles questions</button>
+                    <button class="print-btn" onclick="window.print()">Imprimer fiches</button>
+                    <button class="print-btn" onclick="printTeacherKey()">Imprimer réponses</button>
                 </div>
             </div>
 
@@ -1372,8 +1495,12 @@
             } else if (seriesNum === 6) {
                 // Prix à l'unité — progressif
                 for (let i = 0; i < 15; i++) {
-                    const units = ['kg', 'L', 'pièce'];
-                    const unit = units[Math.floor(Math.random() * units.length)];
+                    const unitOptions = [
+                        { sing: 'kg', plur: 'kg' },
+                        { sing: 'L', plur: 'L' },
+                        { sing: 'pièce', plur: 'pièces' }
+                    ];
+                    const unit = unitOptions[Math.floor(Math.random() * unitOptions.length)];
                     let divisor, unitPrice;
                     if (i < 5) {
                         divisor = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
@@ -1387,7 +1514,7 @@
                     }
                     const total = roundToTwo(divisor * unitPrice);
                     questions.push({
-                        text: `${divisor} ${unit} pour ${fmtPrice(total)}€. Prix par ${unit} ?`,
+                        text: `${divisor} ${unit.plur} pour ${fmtPrice(total)}€. Prix par ${unit.sing} ?`,
                         answer: fmtPrice(unitPrice) + '€'
                     });
                 }
