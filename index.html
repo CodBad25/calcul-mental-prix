@@ -763,7 +763,7 @@
                 background: white;
             }
 
-            .nav-bar, .print-controls, .student-name-form, .series-selector,
+            .nav-bar, .print-controls, .series-chips, .student-name-form, .series-selector,
             .interactive-quiz, .student-profile, .teacher-login,
             .dashboard-content {
                 display: none;
@@ -862,6 +862,34 @@
         .print-btn:hover {
             background: #1e3a8a;
         }
+
+        .series-chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .series-chip {
+            padding: 6px 14px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.15s;
+            color: #666;
+        }
+
+        .series-chip.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        .series-chip:hover {
+            border-color: #1e40af;
+        }
     </style>
 </head>
 <body>
@@ -876,9 +904,23 @@
         <!-- ============ PRINT MODE ============ -->
         <div id="print-mode" class="mode-section active print-section">
             <div class="print-controls">
-                <button class="print-btn" onclick="generatePrintSheets()">Nouvelles questions</button>
-                <button class="print-btn" onclick="window.print()">Imprimer les fiches élèves</button>
-                <button class="print-btn" onclick="printTeacherKey()">Imprimer les réponses</button>
+                <div style="margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #1e40af;">Séries à imprimer :</div>
+                <div class="series-chips" id="seriesChips">
+                    <button class="series-chip active" data-series="all" onclick="toggleSeriesChip(this)">Toutes</button>
+                    <button class="series-chip active" data-series="1" onclick="toggleSeriesChip(this)">S1</button>
+                    <button class="series-chip active" data-series="2" onclick="toggleSeriesChip(this)">S2</button>
+                    <button class="series-chip active" data-series="3" onclick="toggleSeriesChip(this)">S3</button>
+                    <button class="series-chip active" data-series="4" onclick="toggleSeriesChip(this)">S4</button>
+                    <button class="series-chip active" data-series="5" onclick="toggleSeriesChip(this)">S5</button>
+                    <button class="series-chip active" data-series="6" onclick="toggleSeriesChip(this)">S6</button>
+                    <button class="series-chip active" data-series="7" onclick="toggleSeriesChip(this)">S7</button>
+                    <button class="series-chip active" data-series="8" onclick="toggleSeriesChip(this)">S8</button>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="print-btn" onclick="generatePrintSheets()">Nouvelles questions</button>
+                    <button class="print-btn" onclick="window.print()">Imprimer les fiches élèves</button>
+                    <button class="print-btn" onclick="printTeacherKey()">Imprimer les réponses</button>
+                </div>
             </div>
 
             <!-- STUDENT SHEETS -->
@@ -1452,7 +1494,43 @@
             renderSeriesSelector();
         }
 
-        // ============ PRINT MODE ============
+        // ============ PRINT MODE — SERIES SELECTION ============
+        let selectedSeries = new Set([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        function toggleSeriesChip(btn) {
+            const series = btn.dataset.series;
+
+            if (series === 'all') {
+                const allActive = btn.classList.contains('active');
+                const chips = document.querySelectorAll('.series-chip');
+                if (allActive) {
+                    // Deselect all
+                    chips.forEach(c => c.classList.remove('active'));
+                    selectedSeries.clear();
+                } else {
+                    // Select all
+                    chips.forEach(c => c.classList.add('active'));
+                    selectedSeries = new Set([1, 2, 3, 4, 5, 6, 7, 8]);
+                }
+            } else {
+                const num = parseInt(series);
+                btn.classList.toggle('active');
+                if (selectedSeries.has(num)) {
+                    selectedSeries.delete(num);
+                } else {
+                    selectedSeries.add(num);
+                }
+                // Update "Toutes" chip
+                const allChip = document.querySelector('.series-chip[data-series="all"]');
+                if (selectedSeries.size === 8) {
+                    allChip.classList.add('active');
+                } else {
+                    allChip.classList.remove('active');
+                }
+            }
+            generatePrintSheets();
+        }
+
         const SERIES_TITLES = [
             'Série 1 — Rendre la monnaie',
             'Série 2 — Additions de prix',
@@ -1472,10 +1550,12 @@
             const container = document.getElementById('print-series-container');
             const teacherContainer = document.getElementById('print-teacher-section');
 
+            const seriesToGenerate = selectedSeries.size > 0 ? [...selectedSeries].sort((a, b) => a - b) : [1, 2, 3, 4, 5, 6, 7, 8];
+
             let seriesHtml = '';
-            for (let s = 1; s <= 8; s++) {
+            for (const s of seriesToGenerate) {
                 const questions = generateQuestions(s);
-                printAnswers.push(questions.map(q => q.answer));
+                printAnswers.push({ num: s, answers: questions.map(q => q.answer) });
 
                 let questionsHtml = '';
                 questions.forEach(q => {
@@ -1528,13 +1608,13 @@
                     </ul>
                 </div>
                 <table class="answers-table">
-                    <thead><tr>${SERIES_TITLES.map((_, i) => `<th>Série ${i + 1}</th>`).join('')}</tr></thead>
+                    <thead><tr>${printAnswers.map(s => `<th>Série ${s.num}</th>`).join('')}</tr></thead>
                     <tbody>`;
 
             for (let q = 0; q < 15; q++) {
                 teacherHtml += '<tr>';
-                for (let s = 0; s < 8; s++) {
-                    teacherHtml += `<td><span class="question-number">${q + 1}.</span> ${printAnswers[s][q]}</td>`;
+                for (const s of printAnswers) {
+                    teacherHtml += `<td><span class="question-number">${q + 1}.</span> ${s.answers[q]}</td>`;
                 }
                 teacherHtml += '</tr>';
             }
