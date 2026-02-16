@@ -1456,7 +1456,10 @@
                     <h3>Connexion enseignant</h3>
                     <div class="auth-form">
                         <input type="email" id="authEmail" placeholder="Email">
-                        <input type="password" id="authPassword" placeholder="Mot de passe">
+                        <div style="position:relative;flex:1;min-width:180px;">
+                            <input type="password" id="authPassword" placeholder="Mot de passe" style="width:100%;padding-right:40px;">
+                            <button type="button" onclick="togglePassword()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#666;padding:4px;" id="togglePwdBtn" title="Afficher le mot de passe">&#128065;</button>
+                        </div>
                         <button class="auth-btn primary" onclick="teacherLogin()">Se connecter</button>
                         <button class="auth-btn secondary" onclick="teacherSignup()">Créer un compte</button>
                     </div>
@@ -1546,6 +1549,20 @@
             el.className = 'toast-msg ' + type;
             el.textContent = msg;
             setTimeout(() => { el.className = 'toast-msg'; }, 4000);
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('authPassword');
+            const btn = document.getElementById('togglePwdBtn');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '&#128064;';
+                btn.title = 'Masquer le mot de passe';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '&#128065;';
+                btn.title = 'Afficher le mot de passe';
+            }
         }
 
         async function teacherLogin() {
