@@ -1367,25 +1367,41 @@
 
         function generateQuestions(seriesNum) {
             const questions = [];
+            const usedTexts = new Set();
+
+            function addUnique(generator) {
+                for (let attempt = 0; attempt < 20; attempt++) {
+                    const q = generator();
+                    if (!usedTexts.has(q.text)) {
+                        usedTexts.add(q.text);
+                        questions.push(q);
+                        return;
+                    }
+                }
+                // Fallback après 20 tentatives : accepter le doublon
+                questions.push(generator());
+            }
 
             if (seriesNum === 1) {
                 // Rendre la monnaie — progressif
                 for (let i = 0; i < 15; i++) {
-                    let bill, payment;
-                    if (i < 5) {
-                        bill = [5, 10, 20][Math.floor(Math.random() * 3)];
-                        payment = nicePrice(1, bill - 1, 0.50);
-                    } else if (i < 10) {
-                        bill = [10, 20, 50][Math.floor(Math.random() * 3)];
-                        payment = nicePrice(1, bill - 0.5, 0.10);
-                    } else {
-                        bill = [20, 50, 100][Math.floor(Math.random() * 3)];
-                        payment = nicePrice(1, bill - 0.5, 0.05);
-                    }
-                    const change = roundToTwo(bill - payment);
-                    questions.push({
-                        text: `On paie ${fmtPrice(payment)}€ avec ${bill}€. Combien rend-on ?`,
-                        answer: fmtPrice(change) + '€'
+                    addUnique(() => {
+                        let bill, payment;
+                        if (i < 5) {
+                            bill = [5, 10, 20][Math.floor(Math.random() * 3)];
+                            payment = nicePrice(1, bill - 1, 0.50);
+                        } else if (i < 10) {
+                            bill = [10, 20, 50][Math.floor(Math.random() * 3)];
+                            payment = nicePrice(1, bill - 0.5, 0.10);
+                        } else {
+                            bill = [20, 50, 100][Math.floor(Math.random() * 3)];
+                            payment = nicePrice(1, bill - 0.5, 0.05);
+                        }
+                        const change = roundToTwo(bill - payment);
+                        return {
+                            text: `On paie ${fmtPrice(payment)}€ avec ${bill}€. Combien rend-on ?`,
+                            answer: fmtPrice(change) + '€'
+                        };
                     });
                 }
 
@@ -1393,164 +1409,180 @@
                 // Additions de prix — progressif
                 // Q1-5 : deux articles, prix en x,50 ou entiers
                 for (let i = 0; i < 5; i++) {
-                    const [a, b] = pickItems(2);
-                    const p1 = nicePrice(0.50, 10, 0.50);
-                    const p2 = nicePrice(0.50, 10, 0.50);
-                    const total = roundToTwo(p1 + p2);
-                    questions.push({
-                        text: `${a.art.charAt(0).toUpperCase() + a.art.slice(1)} ${a.sing} à ${fmtPrice(p1)}€ et ${b.art} ${b.sing} à ${fmtPrice(p2)}€. Total ?`,
-                        answer: fmtPrice(total) + '€'
+                    addUnique(() => {
+                        const [a, b] = pickItems(2);
+                        const p1 = nicePrice(0.50, 10, 0.50);
+                        const p2 = nicePrice(0.50, 10, 0.50);
+                        const total = roundToTwo(p1 + p2);
+                        return {
+                            text: `${a.art.charAt(0).toUpperCase() + a.art.slice(1)} ${a.sing} à ${fmtPrice(p1)}€ et ${b.art} ${b.sing} à ${fmtPrice(p2)}€. Total ?`,
+                            answer: fmtPrice(total) + '€'
+                        };
                     });
                 }
                 // Q6-10 : quantité × prix ou deux articles en x,25
                 for (let i = 0; i < 5; i++) {
-                    if (i % 2 === 0) {
-                        const item = pickItem();
-                        const qty = Math.floor(Math.random() * 3) + 2;
-                        const price = nicePrice(0.50, 8, 0.25);
-                        const total = roundToTwo(qty * price);
-                        questions.push({
-                            text: `${qty} ${item.plur} à ${fmtPrice(price)}€. Total ?`,
-                            answer: fmtPrice(total) + '€'
-                        });
-                    } else {
-                        const [a, b] = pickItems(2);
-                        const p1 = nicePrice(1, 15, 0.25);
-                        const p2 = nicePrice(1, 12, 0.25);
-                        const total = roundToTwo(p1 + p2);
-                        questions.push({
-                            text: `${a.art.charAt(0).toUpperCase() + a.art.slice(1)} ${a.sing} à ${fmtPrice(p1)}€ et ${b.art} ${b.sing} à ${fmtPrice(p2)}€. Total ?`,
-                            answer: fmtPrice(total) + '€'
-                        });
-                    }
+                    addUnique(() => {
+                        if (i % 2 === 0) {
+                            const item = pickItem();
+                            const qty = Math.floor(Math.random() * 3) + 2;
+                            const price = nicePrice(0.50, 8, 0.25);
+                            const total = roundToTwo(qty * price);
+                            return {
+                                text: `${qty} ${item.plur} à ${fmtPrice(price)}€. Total ?`,
+                                answer: fmtPrice(total) + '€'
+                            };
+                        } else {
+                            const [a, b] = pickItems(2);
+                            const p1 = nicePrice(1, 15, 0.25);
+                            const p2 = nicePrice(1, 12, 0.25);
+                            const total = roundToTwo(p1 + p2);
+                            return {
+                                text: `${a.art.charAt(0).toUpperCase() + a.art.slice(1)} ${a.sing} à ${fmtPrice(p1)}€ et ${b.art} ${b.sing} à ${fmtPrice(p2)}€. Total ?`,
+                                answer: fmtPrice(total) + '€'
+                            };
+                        }
+                    });
                 }
                 // Q11-15 : trois articles, multiples de 0,10
                 for (let i = 0; i < 5; i++) {
-                    const p1 = nicePrice(1, 12, 0.10);
-                    const p2 = nicePrice(1, 12, 0.10);
-                    const p3 = nicePrice(1, 8, 0.10);
-                    const total = roundToTwo(p1 + p2 + p3);
-                    questions.push({
-                        text: `${fmtPrice(p1)}€ + ${fmtPrice(p2)}€ + ${fmtPrice(p3)}€. Total ?`,
-                        answer: fmtPrice(total) + '€'
+                    addUnique(() => {
+                        const p1 = nicePrice(1, 12, 0.10);
+                        const p2 = nicePrice(1, 12, 0.10);
+                        const p3 = nicePrice(1, 8, 0.10);
+                        const total = roundToTwo(p1 + p2 + p3);
+                        return {
+                            text: `${fmtPrice(p1)}€ + ${fmtPrice(p2)}€ + ${fmtPrice(p3)}€. Total ?`,
+                            answer: fmtPrice(total) + '€'
+                        };
                     });
                 }
 
             } else if (seriesNum === 3) {
                 // Prix × quantité — progressif
                 for (let i = 0; i < 15; i++) {
-                    const item = pickItem();
-                    let qty, price;
-                    if (i < 5) {
-                        qty = Math.floor(Math.random() * 5) + 2;
-                        price = nicePrice(0.50, 5, 0.50);
-                    } else if (i < 10) {
-                        qty = Math.floor(Math.random() * 6) + 2;
-                        price = nicePrice(0.25, 8, 0.25);
-                    } else {
-                        qty = Math.floor(Math.random() * 8) + 3;
-                        price = nicePrice(0.10, 5, 0.10);
-                    }
-                    const total = roundToTwo(qty * price);
-                    questions.push({
-                        text: `${qty} ${item.plur} à ${fmtPrice(price)}€. Prix total ?`,
-                        answer: fmtPrice(total) + '€'
+                    addUnique(() => {
+                        const item = pickItem();
+                        let qty, price;
+                        if (i < 5) {
+                            qty = Math.floor(Math.random() * 5) + 2;
+                            price = nicePrice(0.50, 5, 0.50);
+                        } else if (i < 10) {
+                            qty = Math.floor(Math.random() * 6) + 2;
+                            price = nicePrice(0.25, 8, 0.25);
+                        } else {
+                            qty = Math.floor(Math.random() * 8) + 3;
+                            price = nicePrice(0.10, 5, 0.10);
+                        }
+                        const total = roundToTwo(qty * price);
+                        return {
+                            text: `${qty} ${item.plur} à ${fmtPrice(price)}€. Prix total ?`,
+                            answer: fmtPrice(total) + '€'
+                        };
                     });
                 }
 
             } else if (seriesNum === 4) {
                 // Partager l'addition — progressif
                 for (let i = 0; i < 15; i++) {
-                    const item = pickItem();
-                    let divisor, unitPrice;
-                    if (i < 5) {
-                        divisor = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
-                        unitPrice = nicePrice(1, 10, 0.50);
-                    } else if (i < 10) {
-                        divisor = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
-                        unitPrice = nicePrice(0.50, 8, 0.25);
-                    } else {
-                        divisor = [3, 4, 5, 6, 8][Math.floor(Math.random() * 5)];
-                        unitPrice = nicePrice(0.50, 12, 0.25);
-                    }
-                    const total = roundToTwo(divisor * unitPrice);
-                    questions.push({
-                        text: `${fmtPrice(total)}€ pour ${divisor} ${item.plur}. Prix d'${item.art} ${item.sing} ?`,
-                        answer: fmtPrice(unitPrice) + '€'
+                    addUnique(() => {
+                        const item = pickItem();
+                        let divisor, unitPrice;
+                        if (i < 5) {
+                            divisor = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+                            unitPrice = nicePrice(1, 10, 0.50);
+                        } else if (i < 10) {
+                            divisor = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+                            unitPrice = nicePrice(0.50, 8, 0.25);
+                        } else {
+                            divisor = [3, 4, 5, 6, 8][Math.floor(Math.random() * 5)];
+                            unitPrice = nicePrice(0.50, 12, 0.25);
+                        }
+                        const total = roundToTwo(divisor * unitPrice);
+                        return {
+                            text: `${fmtPrice(total)}€ pour ${divisor} ${item.plur}. Prix d'${item.art} ${item.sing} ?`,
+                            answer: fmtPrice(unitPrice) + '€'
+                        };
                     });
                 }
 
             } else if (seriesNum === 5) {
                 // Pourcentages — progressif
                 for (let i = 0; i < 15; i++) {
-                    let pct, amount;
-                    if (i < 5) {
-                        pct = [10, 50][Math.floor(Math.random() * 2)];
-                    } else if (i < 10) {
-                        pct = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
-                    } else {
-                        pct = [10, 20, 25, 50, 75][Math.floor(Math.random() * 5)];
-                    }
-                    if (pct === 10) amount = (Math.floor(Math.random() * 19) + 1) * 10;
-                    else if (pct === 20) amount = (Math.floor(Math.random() * 38) + 2) * 5;
-                    else if (pct === 25) amount = (Math.floor(Math.random() * 47) + 3) * 4;
-                    else if (pct === 50) amount = (Math.floor(Math.random() * 48) + 2) * 2;
-                    else amount = (Math.floor(Math.random() * 47) + 3) * 4;
-                    const result = roundToTwo(amount * pct / 100);
-                    questions.push({
-                        text: `${pct}% de ${amount}€. Montant ?`,
-                        answer: fmtPrice(result) + '€'
+                    addUnique(() => {
+                        let pct, amount;
+                        if (i < 5) {
+                            pct = [10, 50][Math.floor(Math.random() * 2)];
+                        } else if (i < 10) {
+                            pct = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
+                        } else {
+                            pct = [10, 20, 25, 50, 75][Math.floor(Math.random() * 5)];
+                        }
+                        if (pct === 10) amount = (Math.floor(Math.random() * 19) + 1) * 10;
+                        else if (pct === 20) amount = (Math.floor(Math.random() * 38) + 2) * 5;
+                        else if (pct === 25) amount = (Math.floor(Math.random() * 47) + 3) * 4;
+                        else if (pct === 50) amount = (Math.floor(Math.random() * 48) + 2) * 2;
+                        else amount = (Math.floor(Math.random() * 47) + 3) * 4;
+                        const result = roundToTwo(amount * pct / 100);
+                        return {
+                            text: `${pct}% de ${amount}€. Montant ?`,
+                            answer: fmtPrice(result) + '€'
+                        };
                     });
                 }
 
             } else if (seriesNum === 6) {
                 // Prix à l'unité — progressif
                 for (let i = 0; i < 15; i++) {
-                    const unitOptions = [
-                        { sing: 'kg', plur: 'kg' },
-                        { sing: 'L', plur: 'L' },
-                        { sing: 'pièce', plur: 'pièces' }
-                    ];
-                    const unit = unitOptions[Math.floor(Math.random() * unitOptions.length)];
-                    let divisor, unitPrice;
-                    if (i < 5) {
-                        divisor = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
-                        unitPrice = nicePrice(1, 8, 0.50);
-                    } else if (i < 10) {
-                        divisor = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
-                        unitPrice = nicePrice(0.50, 6, 0.25);
-                    } else {
-                        divisor = [3, 4, 5, 6, 8][Math.floor(Math.random() * 5)];
-                        unitPrice = nicePrice(0.25, 5, 0.25);
-                    }
-                    const total = roundToTwo(divisor * unitPrice);
-                    questions.push({
-                        text: `${divisor} ${unit.plur} pour ${fmtPrice(total)}€. Prix par ${unit.sing} ?`,
-                        answer: fmtPrice(unitPrice) + '€'
+                    addUnique(() => {
+                        const unitOptions = [
+                            { sing: 'kg', plur: 'kg' },
+                            { sing: 'L', plur: 'L' },
+                            { sing: 'pièce', plur: 'pièces' }
+                        ];
+                        const unit = unitOptions[Math.floor(Math.random() * unitOptions.length)];
+                        let divisor, unitPrice;
+                        if (i < 5) {
+                            divisor = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+                            unitPrice = nicePrice(1, 8, 0.50);
+                        } else if (i < 10) {
+                            divisor = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+                            unitPrice = nicePrice(0.50, 6, 0.25);
+                        } else {
+                            divisor = [3, 4, 5, 6, 8][Math.floor(Math.random() * 5)];
+                            unitPrice = nicePrice(0.25, 5, 0.25);
+                        }
+                        const total = roundToTwo(divisor * unitPrice);
+                        return {
+                            text: `${divisor} ${unit.plur} pour ${fmtPrice(total)}€. Prix par ${unit.sing} ?`,
+                            answer: fmtPrice(unitPrice) + '€'
+                        };
                     });
                 }
 
             } else if (seriesNum === 7) {
                 // Fractions de prix
                 for (let i = 0; i < 15; i++) {
-                    const allFracs = [
-                        {num: 1, den: 2, text: 'La moitié de'},
-                        {num: 1, den: 3, text: 'Le tiers de'},
-                        {num: 2, den: 3, text: 'Les deux tiers de'},
-                        {num: 1, den: 4, text: 'Le quart de'},
-                        {num: 3, den: 4, text: 'Les trois quarts de'},
-                        {num: 1, den: 5, text: 'Le cinquième de'}
-                    ];
-                    let fracs;
-                    if (i < 5) fracs = allFracs.slice(0, 2);
-                    else if (i < 10) fracs = allFracs.slice(0, 4);
-                    else fracs = allFracs;
-                    const frac = fracs[Math.floor(Math.random() * fracs.length)];
-                    let amount = (Math.floor(Math.random() * 30) + 2) * frac.den;
-                    const result = amount * frac.num / frac.den;
-                    questions.push({
-                        text: `${frac.text} ${amount}€. Montant ?`,
-                        answer: fmtPrice(result) + '€'
+                    addUnique(() => {
+                        const allFracs = [
+                            {num: 1, den: 2, text: 'La moitié de'},
+                            {num: 1, den: 3, text: 'Le tiers de'},
+                            {num: 2, den: 3, text: 'Les deux tiers de'},
+                            {num: 1, den: 4, text: 'Le quart de'},
+                            {num: 3, den: 4, text: 'Les trois quarts de'},
+                            {num: 1, den: 5, text: 'Le cinquième de'}
+                        ];
+                        let fracs;
+                        if (i < 5) fracs = allFracs.slice(0, 2);
+                        else if (i < 10) fracs = allFracs.slice(0, 4);
+                        else fracs = allFracs;
+                        const frac = fracs[Math.floor(Math.random() * fracs.length)];
+                        let amount = (Math.floor(Math.random() * 30) + 2) * frac.den;
+                        const result = amount * frac.num / frac.den;
+                        return {
+                            text: `${frac.text} ${amount}€. Montant ?`,
+                            answer: fmtPrice(result) + '€'
+                        };
                     });
                 }
 
@@ -1597,7 +1629,7 @@
                     }
                 ];
                 for (let i = 0; i < 15; i++) {
-                    questions.push(types[i % types.length]());
+                    addUnique(() => types[i % types.length]());
                 }
             }
 
