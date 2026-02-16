@@ -1354,6 +1354,19 @@
             background: rgba(220,38,38,1);
         }
 
+        .toolbar-btn.toolbar-delete {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,200,200,0.8);
+            font-size: 10px;
+            padding: 2px 6px;
+        }
+
+        .toolbar-btn.toolbar-delete:hover {
+            background: rgba(220,38,38,0.8);
+            color: white;
+        }
+
         .class-delete-btn {
             background: none;
             border: none;
@@ -1697,6 +1710,7 @@
                     <div class="toolbar-left">
                         <span class="toolbar-class-name" id="toolbar-class-name"></span>
                         <span class="toolbar-code">Code : <strong id="toolbar-class-code"></strong></span>
+                        <button class="toolbar-btn toolbar-delete" id="toolbar-delete-btn" onclick="deleteActiveClass()">Supprimer</button>
                     </div>
                     <div class="toolbar-right">
                         <span id="toolbar-other-classes"></span>
@@ -1978,6 +1992,13 @@
             if (activeClassId === classId) activeClassId = null;
             showToast('classes-toast', `Classe "${className}" supprimée.`, 'success');
             await loadClasses();
+        }
+
+        async function deleteActiveClass() {
+            if (!activeClassId) return;
+            const cls = teacherClasses.find(c => c.id === activeClassId);
+            if (!cls) return;
+            await deleteClass(cls.id, cls.name);
         }
 
         async function selectClass(classId) {
