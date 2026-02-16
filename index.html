@@ -1299,6 +1299,21 @@
             opacity: 0.85;
         }
 
+        .toolbar-other-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 3px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .toolbar-other-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
         .toolbar-right {
             display: flex;
             gap: 6px;
@@ -1565,9 +1580,10 @@
                     <div class="toolbar-left">
                         <span class="toolbar-class-name" id="toolbar-class-name"></span>
                         <span class="toolbar-code">Code : <strong id="toolbar-class-code"></strong></span>
+                        <span id="toolbar-other-classes"></span>
                     </div>
                     <div class="toolbar-right">
-                        <button class="toolbar-btn" onclick="showClassSelector()">Changer</button>
+                        <button class="toolbar-btn" onclick="showClassSelector()">+ Classe</button>
                         <button class="toolbar-btn export" onclick="exportCSV()">CSV</button>
                         <button class="toolbar-btn logout" onclick="teacherLogout()">Quitter</button>
                     </div>
@@ -1818,12 +1834,16 @@
             renderClassList();
             const cls = teacherClasses.find(c => c.id === classId);
             if (cls) {
-                // Hide class selector, show compact toolbar
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('classes-section').style.display = 'none';
                 document.getElementById('teacher-toolbar').style.display = 'block';
                 document.getElementById('toolbar-class-name').textContent = cls.name;
                 document.getElementById('toolbar-class-code').textContent = cls.code;
+                // Render other classes as buttons in toolbar
+                const others = teacherClasses.filter(c => c.id !== classId);
+                document.getElementById('toolbar-other-classes').innerHTML = others.map(c =>
+                    `<button class="toolbar-other-btn" onclick="selectClass('${c.id}')">${c.name}</button>`
+                ).join('');
             }
             await refreshDashboard();
         }
