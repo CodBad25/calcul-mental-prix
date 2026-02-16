@@ -712,8 +712,8 @@
         .students-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
-            margin-bottom: 20px;
+            font-size: 11px;
+            margin-bottom: 10px;
         }
 
         .students-table thead {
@@ -723,13 +723,13 @@
         }
 
         .students-table th {
-            padding: 10px;
+            padding: 6px 8px;
             text-align: left;
             border: 1px solid #999;
         }
 
         .students-table td {
-            padding: 8px 10px;
+            padding: 4px 8px;
             border: 1px solid #ddd;
         }
 
@@ -1051,15 +1051,15 @@
         /* ============ SUPABASE AUTH & CLASSES ============ */
         .auth-section {
             background: #e0e7ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
 
         .auth-section h3 {
             color: #1e40af;
-            margin-bottom: 12px;
-            font-size: 16px;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
         .auth-form {
@@ -1148,49 +1148,49 @@
 
         .classes-section {
             background: #f0f4ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 8px;
             border: 1px solid #c7d2fe;
         }
 
         .classes-section h3 {
             color: #1e40af;
-            margin-bottom: 15px;
-            font-size: 16px;
+            margin-bottom: 8px;
+            font-size: 15px;
         }
 
         .class-create-form {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 8px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .class-create-form input {
-            padding: 8px 14px;
+            padding: 6px 10px;
             border: 2px solid #c7d2fe;
             border-radius: 4px;
-            font-size: 14px;
-            width: 150px;
+            font-size: 13px;
+            width: 120px;
         }
 
         .class-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         .class-chip {
-            padding: 10px 16px;
+            padding: 6px 12px;
             border: 2px solid #c7d2fe;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             transition: all 0.15s;
             text-align: center;
         }
@@ -1215,16 +1215,17 @@
 
         .code-display {
             font-family: 'Courier New', monospace;
-            font-size: 32px;
+            font-size: 18px;
             font-weight: 700;
             color: #1e40af;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-align: center;
-            padding: 15px;
+            padding: 6px 12px;
             background: white;
-            border: 3px dashed #1e40af;
-            border-radius: 8px;
-            margin: 10px 0;
+            border: 2px dashed #1e40af;
+            border-radius: 6px;
+            margin: 4px 0;
+            display: inline-block;
         }
 
         .student-form-fields {
@@ -1313,7 +1314,7 @@
             }
 
             .code-display {
-                font-size: 24px;
+                font-size: 16px;
             }
         }
     </style>
@@ -1495,7 +1496,7 @@
                 </div>
                 <div class="class-list" id="class-list"></div>
                 <div id="active-class-code" style="display:none;">
-                    <p style="font-size:13px;color:#666;margin-bottom:5px;">Code à communiquer aux élèves :</p>
+                    <span style="font-size:12px;color:#666;">Code élèves : </span>
                     <div class="code-display" id="class-code-display"></div>
                 </div>
                 <div id="classes-toast" class="toast-msg"></div>
@@ -1503,10 +1504,9 @@
 
             <!-- Dashboard -->
             <div id="dashboard-content">
-                <h2 style="color: #1e40af; margin-bottom: 20px;">Suivi de classe</h2>
-
-                <div style="margin-bottom: 20px;">
-                    <button class="submit-btn" style="background: #1e40af; margin-right: 10px;" onclick="exportCSV()">Exporter en CSV</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <h3 style="color: #1e40af; margin:0; font-size:15px;">Suivi de classe</h3>
+                    <button class="auth-btn primary" style="padding:6px 14px;font-size:12px;" onclick="exportCSV()">Exporter CSV</button>
                 </div>
 
                 <table class="students-table" id="dashboardTable">
