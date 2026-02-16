@@ -1270,6 +1270,64 @@
             text-transform: uppercase;
         }
 
+        .teacher-toolbar-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1e40af;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toolbar-class-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .toolbar-code {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 6px;
+        }
+
+        .toolbar-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .toolbar-btn.logout {
+            background: rgba(220,38,38,0.8);
+            border-color: rgba(220,38,38,0.9);
+        }
+
+        .toolbar-btn.logout:hover {
+            background: rgba(220,38,38,1);
+        }
+
         .class-delete-btn {
             background: none;
             border: none;
@@ -1458,7 +1516,7 @@
 
         <!-- ============ TEACHER DASHBOARD ============ -->
         <div id="teacher-mode" class="mode-section">
-            <!-- Auth Section -->
+            <!-- Auth Section (login form) -->
             <div class="auth-section" id="auth-section">
                 <div id="auth-logged-out">
                     <h3>Connexion enseignant</h3>
@@ -1476,13 +1534,7 @@
                     </div>
                     <div id="auth-toast" class="toast-msg"></div>
                 </div>
-                <div id="auth-logged-in" style="display:none;">
-                    <div class="auth-connected">
-                        <span class="auth-email" id="auth-user-email"></span>
-                        <button class="auth-btn danger" onclick="teacherLogout()">Déconnexion</button>
-                    </div>
-                </div>
-                <!-- Password reset form (shown after clicking reset link in email) -->
+                <div id="auth-logged-in" style="display:none;"></div>
                 <div id="auth-reset-password" style="display:none;">
                     <h3>Nouveau mot de passe</h3>
                     <div class="auth-form">
@@ -1496,7 +1548,7 @@
                 </div>
             </div>
 
-            <!-- Classes Section (visible only when logged in) -->
+            <!-- Class selection (shown when logged in but no class selected, or via "Changer") -->
             <div class="classes-section" id="classes-section" style="display:none;">
                 <h3>Mes classes</h3>
                 <div class="class-create-form">
@@ -1504,19 +1556,26 @@
                     <button class="auth-btn primary" onclick="createClass()">Créer une classe</button>
                 </div>
                 <div class="class-list" id="class-list"></div>
-                <div id="active-class-code" style="display:none;">
-                    <span style="font-size:12px;color:#666;">Code élèves : </span>
-                    <div class="code-display" id="class-code-display"></div>
-                </div>
                 <div id="classes-toast" class="toast-msg"></div>
+            </div>
+
+            <!-- Compact toolbar (shown when a class IS selected) -->
+            <div id="teacher-toolbar" style="display:none;">
+                <div class="teacher-toolbar-bar">
+                    <div class="toolbar-left">
+                        <span class="toolbar-class-name" id="toolbar-class-name"></span>
+                        <span class="toolbar-code">Code : <strong id="toolbar-class-code"></strong></span>
+                    </div>
+                    <div class="toolbar-right">
+                        <button class="toolbar-btn" onclick="showClassSelector()">Changer</button>
+                        <button class="toolbar-btn export" onclick="exportCSV()">CSV</button>
+                        <button class="toolbar-btn logout" onclick="teacherLogout()">Quitter</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Dashboard -->
             <div id="dashboard-content">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <h3 style="color: #1e40af; margin:0; font-size:15px;">Suivi de classe</h3>
-                    <button class="auth-btn primary" style="padding:6px 14px;font-size:12px;" onclick="exportCSV()">Exporter CSV</button>
-                </div>
 
                 <table class="students-table" id="dashboardTable">
                     <thead>
@@ -1680,15 +1739,18 @@
             activeClassId = null;
             document.getElementById('auth-logged-in').style.display = 'none';
             document.getElementById('auth-logged-out').style.display = 'block';
+            document.getElementById('auth-section').style.display = 'block';
             document.getElementById('classes-section').style.display = 'none';
+            document.getElementById('teacher-toolbar').style.display = 'none';
             refreshDashboard();
         }
 
         function showLoggedIn() {
             document.getElementById('auth-logged-out').style.display = 'none';
             document.getElementById('auth-logged-in').style.display = 'block';
-            document.getElementById('auth-user-email').textContent = currentTeacher.email;
+            document.getElementById('auth-section').style.display = 'none';
             document.getElementById('classes-section').style.display = 'block';
+            document.getElementById('teacher-toolbar').style.display = 'none';
         }
 
         // ============ CLASS MANAGEMENT ============
@@ -1751,10 +1813,19 @@
             renderClassList();
             const cls = teacherClasses.find(c => c.id === classId);
             if (cls) {
-                document.getElementById('active-class-code').style.display = 'block';
-                document.getElementById('class-code-display').textContent = cls.code;
+                // Hide class selector, show compact toolbar
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('classes-section').style.display = 'none';
+                document.getElementById('teacher-toolbar').style.display = 'block';
+                document.getElementById('toolbar-class-name').textContent = cls.name;
+                document.getElementById('toolbar-class-code').textContent = cls.code;
             }
             await refreshDashboard();
+        }
+
+        function showClassSelector() {
+            document.getElementById('teacher-toolbar').style.display = 'none';
+            document.getElementById('classes-section').style.display = 'block';
         }
 
         // ============ STUDENT SUPABASE FUNCTIONS ============
