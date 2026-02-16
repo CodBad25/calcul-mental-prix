@@ -1299,6 +1299,12 @@
             opacity: 0.85;
         }
 
+        .toolbar-switch-label {
+            font-size: 11px;
+            opacity: 0.75;
+            margin-right: 2px;
+        }
+
         .toolbar-other-btn {
             background: rgba(255,255,255,0.15);
             color: white;
@@ -1580,9 +1586,9 @@
                     <div class="toolbar-left">
                         <span class="toolbar-class-name" id="toolbar-class-name"></span>
                         <span class="toolbar-code">Code : <strong id="toolbar-class-code"></strong></span>
-                        <span id="toolbar-other-classes"></span>
                     </div>
                     <div class="toolbar-right">
+                        <span id="toolbar-other-classes"></span>
                         <button class="toolbar-btn" onclick="showClassSelector()">+ Classe</button>
                         <button class="toolbar-btn export" onclick="exportCSV()">CSV</button>
                         <button class="toolbar-btn logout" onclick="teacherLogout()">Quitter</button>
@@ -1839,11 +1845,13 @@
                 document.getElementById('teacher-toolbar').style.display = 'block';
                 document.getElementById('toolbar-class-name').textContent = cls.name;
                 document.getElementById('toolbar-class-code').textContent = cls.code;
-                // Render other classes as buttons in toolbar
+                // Render other classes as buttons in toolbar (right side, with label)
                 const others = teacherClasses.filter(c => c.id !== classId);
-                document.getElementById('toolbar-other-classes').innerHTML = others.map(c =>
-                    `<button class="toolbar-other-btn" onclick="selectClass('${c.id}')">${c.name}</button>`
-                ).join('');
+                document.getElementById('toolbar-other-classes').innerHTML = others.length > 0
+                    ? `<span class="toolbar-switch-label">Changer :</span>` + others.map(c =>
+                        `<button class="toolbar-other-btn" onclick="selectClass('${c.id}')">${c.name}</button>`
+                    ).join('')
+                    : '';
             }
             await refreshDashboard();
         }
