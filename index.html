@@ -1023,6 +1023,7 @@
     </style>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
     <div class="container">
         <!-- NAVIGATION -->
         <div class="nav-bar">
@@ -1050,8 +1051,8 @@
                 </div>
                 <div class="controls-actions">
                     <button class="print-btn secondary" onclick="generatePrintSheets()">Nouvelles questions</button>
-                    <button class="print-btn" onclick="window.print()">Imprimer fiches</button>
-                    <button class="print-btn" onclick="printTeacherKey()">Imprimer réponses</button>
+                    <button class="print-btn" onclick="downloadStudentPDF()">📄 PDF élèves</button>
+                    <button class="print-btn" onclick="downloadTeacherPDF()">📄 PDF enseignant</button>
                 </div>
             </div>
 
@@ -1802,11 +1803,11 @@
             'Série 8 — Le mix final (synthèse)'
         ];
 
-        // Store generated answers for teacher section
-        let printAnswers = [];
+        // Store generated questions for PDF
+        let printQuestionsData = [];
 
         function generatePrintSheets() {
-            printAnswers = [];
+            printQuestionsData = [];
             const container = document.getElementById('print-series-container');
             const teacherContainer = document.getElementById('print-teacher-section');
 
@@ -1815,7 +1816,7 @@
             let seriesHtml = '';
             for (const s of seriesToGenerate) {
                 const questions = generateQuestions(s);
-                printAnswers.push({ num: s, answers: questions.map(q => q.answer) });
+                printQuestionsData.push({ num: s, title: SERIES_TITLES[s - 1], questions });
 
                 let questionsHtml = '';
                 questions.forEach((q, idx) => {
@@ -1837,44 +1838,16 @@
             }
             container.innerHTML = seriesHtml;
 
-            // Generate teacher section
+            // Generate teacher section (HTML preview)
             let teacherHtml = `
                 <div class="teacher-title">Fiche Enseignant — Réponses</div>
-                <div class="objectives">
-                    <h3>Objectifs pédagogiques (Programme 2025)</h3>
-                    <p><strong>Automatismes :</strong> Effectuer 15 opérations en 3 minutes sur le thème des prix.</p>
-                    <p style="margin-top: 8px;">Cette ressource entraîne les élèves à développer un calcul mental fluide et automatisé en contexte significatif (prix, monnaie, réductions). Elle prépare à la maîtrise du calcul mental demandée au DNB et au cycle 4.</p>
-                </div>
-                <div class="advice-section">
-                    <h3>Conseils de passation</h3>
-                    <ul>
-                        <li><strong>Lecture :</strong> Lisez les questions à haute voix, ou laissez les élèves lire silencieusement (adapter selon le niveau).</li>
-                        <li><strong>Timing :</strong> 3 minutes strictes par série. Utilisez un minuteur visible.</li>
-                        <li><strong>Format réponse :</strong> Les élèves écrivent uniquement le résultat, pas les étapes de calcul.</li>
-                        <li><strong>Correction immédiate :</strong> Corriger à chaud pour un feedback optimal et une remédiation rapide.</li>
-                        <li><strong>Progression :</strong> Séries 1-2 en début d'année. Séries 7-8 en fin d'année.</li>
-                        <li><strong>Fréquence :</strong> 1-2 séries par semaine en ouverture de cours (5-10 min).</li>
-                    </ul>
-                </div>
-                <div class="strategies-section">
-                    <h3>Stratégies mentales à enseigner</h3>
-                    <ul>
-                        <li><strong>Compléments :</strong> Rendre la monnaie en passant par la dizaine. Ex : 7,20€ → 8€ (0,80€) → 10€ (2€) = 2,80€.</li>
-                        <li><strong>Pourcentages courants :</strong> 10% = ÷10 ; 50% = ÷2 ; 25% = ÷4 ; 20% = ÷5.</li>
-                        <li><strong>Multiplication par décomposition :</strong> 7 × 1,50 = 7 × 1 + 7 × 0,50 = 10,50.</li>
-                        <li><strong>Prix à l'unité :</strong> total ÷ quantité. Maîtriser les divisions simples.</li>
-                        <li><strong>Fractions :</strong> Lier aux décimaux : 1/2 = 0,5 ; 1/4 = 0,25.</li>
-                        <li><strong>Doubles et moitiés :</strong> Cas particuliers à connaître par automatisme.</li>
-                    </ul>
-                </div>
                 <table class="answers-table">
-                    <thead><tr>${printAnswers.map(s => `<th>Série ${s.num}</th>`).join('')}</tr></thead>
+                    <thead><tr>${printQuestionsData.map(s => `<th>Série ${s.num}</th>`).join('')}</tr></thead>
                     <tbody>`;
-
             for (let q = 0; q < 15; q++) {
                 teacherHtml += '<tr>';
-                for (const s of printAnswers) {
-                    teacherHtml += `<td><span class="question-number">${q + 1}</span>${s.answers[q]}</td>`;
+                for (const s of printQuestionsData) {
+                    teacherHtml += `<td><span class="question-number">${q + 1}</span>${s.questions[q].answer}</td>`;
                 }
                 teacherHtml += '</tr>';
             }
@@ -1882,16 +1855,234 @@
             teacherContainer.innerHTML = teacherHtml;
         }
 
-        function printTeacherKey() {
-            const printArea = document.createElement('div');
-            printArea.style.display = 'none';
+        // ============ PDF GENERATION (jsPDF) ============
+        function downloadStudentPDF() {
+            if (printQuestionsData.length === 0) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
 
-            const teacherSection = document.getElementById('print-teacher-section').cloneNode(true);
-            printArea.appendChild(teacherSection);
-            document.body.appendChild(printArea);
+            const pageW = 210, pageH = 297;
+            const m = 10; // margin
+            const usableW = pageW - 2 * m;
+            const colW = usableW / 3;
+            const rowH = 16;
+            const seriesH = 10 + 5 * rowH + 8; // title bar + grid + score
 
-            window.print();
-            document.body.removeChild(printArea);
+            let y = m;
+
+            // === Header (first page) ===
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.setTextColor(30, 64, 175);
+            doc.text('Calcul Mental \u2014 Prix (6e)', m, y + 7);
+            y += 13;
+
+            doc.setFontSize(10);
+            doc.setTextColor(60, 60, 60);
+            doc.setFont('helvetica', 'normal');
+            const fw = usableW / 3;
+            doc.text('Nom :', m, y + 4);
+            doc.setDrawColor(150); doc.setLineWidth(0.3);
+            doc.line(m + 12, y + 5, m + fw - 3, y + 5);
+            doc.text('Classe :', m + fw, y + 4);
+            doc.line(m + fw + 15, y + 5, m + 2 * fw - 3, y + 5);
+            doc.text('Date :', m + 2 * fw, y + 4);
+            doc.line(m + 2 * fw + 12, y + 5, m + 3 * fw, y + 5);
+            y += 10;
+
+            doc.setDrawColor(30, 64, 175); doc.setLineWidth(0.6);
+            doc.line(m, y, m + usableW, y);
+            y += 6;
+
+            // === Each series ===
+            for (let si = 0; si < printQuestionsData.length; si++) {
+                const s = printQuestionsData[si];
+
+                // New page if needed
+                if (y + seriesH > pageH - m) {
+                    doc.addPage();
+                    y = m;
+                }
+
+                // Title bar
+                doc.setFillColor(30, 64, 175);
+                doc.rect(m, y, usableW, 8, 'F');
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(255, 255, 255);
+                doc.text(s.title, m + 3, y + 5.5);
+                doc.setFont('helvetica', 'italic'); doc.setFontSize(8);
+                doc.text('3 minutes', m + usableW - 22, y + 5.5);
+                y += 10;
+
+                // Questions grid (3 cols × 5 rows)
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 3; col++) {
+                        const qIdx = row * 3 + col;
+                        const q = s.questions[qIdx];
+                        const cx = m + col * colW;
+                        const cy = y + row * rowH;
+
+                        // Cell border
+                        doc.setDrawColor(200, 200, 200); doc.setLineWidth(0.2);
+                        doc.rect(cx, cy, colW, rowH - 1);
+
+                        // Number badge
+                        doc.setFillColor(30, 64, 175);
+                        doc.rect(cx + 2, cy + 2, 6, 4.5, 'F');
+                        doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(255, 255, 255);
+                        doc.text(String(qIdx + 1), cx + 5, cy + 5.2, { align: 'center' });
+
+                        // Question text
+                        doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(30, 30, 30);
+                        const maxTxtW = colW - 16;
+                        const lines = doc.splitTextToSize(q.text, maxTxtW);
+                        doc.text(lines, cx + 10, cy + 4.5);
+
+                        // Answer box
+                        doc.setDrawColor(120, 120, 120); doc.setLineWidth(0.3);
+                        doc.rect(cx + colW - 14, cy + rowH - 7, 12, 5);
+                    }
+                }
+                y += 5 * rowH;
+
+                // Score box
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(60, 60, 60);
+                doc.text('Score : ____ / 15', m + usableW - 35, y + 3);
+                y += 8;
+            }
+
+            doc.save('calcul-mental-prix-eleves.pdf');
+        }
+
+        function downloadTeacherPDF() {
+            if (printQuestionsData.length === 0) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            const pageW = 210, pageH = 297;
+            const m = 10;
+            const usableW = pageW - 2 * m;
+            let y = m;
+
+            // Title
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(18); doc.setTextColor(30, 64, 175);
+            doc.text('Fiche Enseignant \u2014 R\u00e9ponses', m, y + 7);
+            y += 12;
+            doc.setDrawColor(30, 64, 175); doc.setLineWidth(0.6);
+            doc.line(m, y, m + usableW, y);
+            y += 6;
+
+            // Objectives block
+            y = drawInfoBlock(doc, m, y, usableW, 'Objectifs p\u00e9dagogiques (Programme 2025)',
+                [
+                    'Automatismes : Effectuer 15 op\u00e9rations en 3 minutes sur le th\u00e8me des prix.',
+                    'Cette ressource entra\u00eene les \u00e9l\u00e8ves \u00e0 d\u00e9velopper un calcul mental fluide et automatis\u00e9 en contexte significatif (prix, monnaie, r\u00e9ductions).'
+                ], [224, 231, 255], [30, 64, 175]);
+
+            // Advice block
+            y = drawInfoBlock(doc, m, y, usableW, 'Conseils de passation',
+                [
+                    'Lecture : Lisez les questions \u00e0 haute voix ou laissez les \u00e9l\u00e8ves lire silencieusement.',
+                    'Timing : 3 minutes strictes par s\u00e9rie. Utilisez un minuteur visible.',
+                    'Format r\u00e9ponse : Les \u00e9l\u00e8ves \u00e9crivent uniquement le r\u00e9sultat.',
+                    'Correction imm\u00e9diate : Corriger \u00e0 chaud pour un feedback optimal.',
+                    'Progression : S\u00e9ries 1-2 en d\u00e9but d\'ann\u00e9e. S\u00e9ries 7-8 en fin d\'ann\u00e9e.',
+                    'Fr\u00e9quence : 1-2 s\u00e9ries par semaine en ouverture de cours (5-10 min).'
+                ], [254, 243, 199], [180, 83, 9]);
+
+            // Strategies block
+            y = drawInfoBlock(doc, m, y, usableW, 'Strat\u00e9gies mentales \u00e0 enseigner',
+                [
+                    'Compl\u00e9ments : Rendre la monnaie en passant par la dizaine.',
+                    'Pourcentages courants : 10% = \u00f710 ; 50% = \u00f72 ; 25% = \u00f74 ; 20% = \u00f75.',
+                    'Multiplication par d\u00e9composition : 7 \u00d7 1,50 = 7 + 3,50 = 10,50.',
+                    'Prix \u00e0 l\'unit\u00e9 : total \u00f7 quantit\u00e9.',
+                    'Fractions : 1/2 = 0,5 ; 1/4 = 0,25.',
+                    'Doubles et moiti\u00e9s : Cas particuliers \u00e0 conna\u00eetre par automatisme.'
+                ], [220, 252, 231], [22, 163, 74]);
+
+            // New page for answer table
+            doc.addPage();
+            y = m;
+
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(30, 64, 175);
+            doc.text('Tableau des r\u00e9ponses', m, y + 6);
+            y += 12;
+
+            // Answer table
+            const nbSeries = printQuestionsData.length;
+            const colW = usableW / nbSeries;
+            const rowH = 8;
+
+            // Header row
+            doc.setFillColor(30, 64, 175);
+            doc.rect(m, y, usableW, rowH, 'F');
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(255, 255, 255);
+            for (let c = 0; c < nbSeries; c++) {
+                doc.text('S\u00e9rie ' + printQuestionsData[c].num, m + c * colW + colW / 2, y + 5.5, { align: 'center' });
+            }
+            y += rowH;
+
+            // Data rows
+            for (let q = 0; q < 15; q++) {
+                if (q % 2 === 0) {
+                    doc.setFillColor(245, 245, 250);
+                    doc.rect(m, y, usableW, rowH, 'F');
+                }
+
+                doc.setDrawColor(220, 220, 220); doc.setLineWidth(0.1);
+                doc.line(m, y + rowH, m + usableW, y + rowH);
+
+                for (let c = 0; c < nbSeries; c++) {
+                    // Badge
+                    doc.setFillColor(30, 64, 175);
+                    doc.rect(m + c * colW + 2, y + 1.5, 5, 4, 'F');
+                    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(255, 255, 255);
+                    doc.text(String(q + 1), m + c * colW + 4.5, y + 4.3, { align: 'center' });
+
+                    // Answer
+                    doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(30, 30, 30);
+                    doc.text(printQuestionsData[c].questions[q].answer, m + c * colW + 9, y + 5.5);
+
+                    // Column divider
+                    if (c > 0) {
+                        doc.setDrawColor(200, 200, 200); doc.setLineWidth(0.1);
+                        doc.line(m + c * colW, y, m + c * colW, y + rowH);
+                    }
+                }
+                y += rowH;
+            }
+
+            // Table border
+            doc.setDrawColor(30, 64, 175); doc.setLineWidth(0.4);
+            doc.rect(m, m + 12, usableW, rowH + 15 * rowH);
+
+            doc.save('calcul-mental-prix-enseignant.pdf');
+        }
+
+        function drawInfoBlock(doc, x, y, w, title, items, bgColor, accentColor) {
+            const lineH = 5;
+            const blockH = 7 + items.length * lineH + 3;
+
+            // Background
+            doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+            doc.rect(x, y, w, blockH, 'F');
+            // Left accent bar
+            doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+            doc.rect(x, y, 1.5, blockH, 'F');
+
+            // Title
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+            doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+            doc.text(title, x + 5, y + 5);
+
+            // Items
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+            doc.setTextColor(50, 50, 50);
+            items.forEach((item, i) => {
+                doc.text('\u2022 ' + item, x + 5, y + 10 + i * lineH);
+            });
+
+            return y + blockH + 4;
         }
 
         // ============ TEACHER DASHBOARD ============
