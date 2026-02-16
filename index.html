@@ -59,11 +59,17 @@
         }
 
         .mode-section {
-            display: none;
+            display: none !important;
+            overflow: hidden;
+            height: 0;
+            max-height: 0;
         }
 
         .mode-section.active {
-            display: block;
+            display: block !important;
+            height: auto;
+            max-height: none;
+            overflow: visible;
         }
 
         /* ============ PRINT MODE ============ */
@@ -781,6 +787,9 @@
 
             .mode-section.print-section {
                 display: block !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
             }
 
             .header {
@@ -1829,6 +1838,7 @@
 
             document.getElementById(mode + '-mode').classList.add('active');
             event.target.classList.add('active');
+            window.scrollTo(0, 0);
 
             if (mode === 'interactive') {
                 loadStudentProfile();
