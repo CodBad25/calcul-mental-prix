@@ -1458,6 +1458,65 @@
                 font-size: 9px;
             }
         }
+
+        /* Autocomplete */
+        .autocomplete-list {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #1e40af;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .autocomplete-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .autocomplete-item:hover, .autocomplete-item.active {
+            background: #e0e7ff;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Delete class button */
+        .class-chip-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .class-delete-x {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 50%;
+            line-height: 1;
+            opacity: 0.5;
+        }
+
+        .class-delete-x:hover {
+            opacity: 1;
+            background: #fef2f2;
+        }
     </style>
 </head>
 <body>
@@ -1510,21 +1569,19 @@
                 <div class="student-form-fields">
                     <div class="field-group">
                         <label>Code classe (optionnel)</label>
-                        <input type="text" id="classCode" placeholder="Donné par ton enseignant" maxlength="6" style="width:200px; text-transform: uppercase;">
+                        <input type="text" id="classCode" placeholder="Donné par ton enseignant" maxlength="6" style="width:200px; text-transform: uppercase;" oninput="onClassCodeInput()" autocomplete="off">
                     </div>
-                    <div class="field-group">
-                        <label>Prénom *</label>
-                        <input type="text" id="studentName" placeholder="Ton prénom" style="width:160px;">
-                    </div>
-                    <div class="field-group">
-                        <label>Initiale du nom</label>
-                        <input type="text" id="studentInitial" placeholder="B" maxlength="1" class="small">
+                    <div class="field-group" style="position:relative;">
+                        <label>Ton nom *</label>
+                        <input type="text" id="studentSearch" placeholder="Commence à écrire…" style="width:200px;" oninput="onStudentSearch()" onfocus="onStudentSearch()" autocomplete="off">
+                        <div id="studentSuggestions" class="autocomplete-list"></div>
                     </div>
                     <div class="field-group">
                         <label>&nbsp;</label>
                         <button onclick="startInteractive()" style="padding:10px 25px;background:#1e40af;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:600;font-size:14px;">Commencer</button>
                     </div>
                 </div>
+                <div id="class-name-display" style="display:none;margin-top:8px;font-size:13px;color:#1e40af;font-weight:600;"></div>
                 <div id="student-toast" class="toast-msg"></div>
             </div>
 
@@ -1895,11 +1952,32 @@
         function renderClassList() {
             const container = document.getElementById('class-list');
             container.innerHTML = teacherClasses.map(c => `
-                <button class="class-chip ${c.id === activeClassId ? 'active' : ''}" onclick="selectClass('${c.id}')">
-                    ${c.name}
-                    <span class="class-code">${c.code}</span>
-                </button>
+                <span class="class-chip-wrapper">
+                    <button class="class-chip ${c.id === activeClassId ? 'active' : ''}" onclick="selectClass('${c.id}')">
+                        ${c.name}
+                        <span class="class-code">${c.code}</span>
+                    </button>
+                    <button class="class-delete-x" onclick="deleteClass('${c.id}', '${c.name}')" title="Supprimer ${c.name}">&times;</button>
+                </span>
             `).join('');
+        }
+
+        async function deleteClass(classId, className) {
+            if (!confirm(`Supprimer la classe "${className}" et tous ses résultats ? Cette action est irréversible.`)) return;
+            if (!sbClient || !currentTeacher) return;
+
+            // Delete results first (cascade should handle it, but let's be explicit)
+            await sbClient.from('calcul_results').delete().eq('class_id', classId);
+            const { error } = await sbClient.from('calcul_classes').delete().eq('id', classId);
+
+            if (error) {
+                showToast('classes-toast', 'Erreur : ' + error.message, 'error');
+                return;
+            }
+
+            if (activeClassId === classId) activeClassId = null;
+            showToast('classes-toast', `Classe "${className}" supprimée.`, 'success');
+            await loadClasses();
         }
 
         async function selectClass(classId) {
@@ -2059,33 +2137,151 @@
             return data ? JSON.parse(data) : {};
         }
 
+        // ============ STUDENT AUTOCOMPLETE ============
+        let classRoster = [];       // list of student names for current class code
+        let classRosterClassId = null;
+        let selectedSuggestion = -1;
+
+        async function onClassCodeInput() {
+            const code = document.getElementById('classCode').value.trim().toUpperCase();
+            const display = document.getElementById('class-name-display');
+            if (code.length === 6) {
+                const classData = await verifyClassCode(code);
+                if (classData) {
+                    display.textContent = 'Classe : ' + classData.name;
+                    display.style.display = 'block';
+                    // Load roster for autocomplete
+                    classRosterClassId = classData.id;
+                    await loadClassRoster(classData.id);
+                } else {
+                    display.textContent = 'Code invalide';
+                    display.style.display = 'block';
+                    display.style.color = '#dc2626';
+                    classRoster = [];
+                    classRosterClassId = null;
+                }
+            } else {
+                display.style.display = 'none';
+                display.style.color = '#1e40af';
+                classRoster = [];
+                classRosterClassId = null;
+            }
+            hideSuggestions();
+        }
+
+        async function loadClassRoster(classId) {
+            if (!sbClient) return;
+            const { data } = await sbClient.from('calcul_results')
+                .select('student_name').eq('class_id', classId);
+            if (data) {
+                classRoster = [...new Set(data.map(r => r.student_name))].sort((a, b) => {
+                    const aP = a.split(' '), bP = b.split(' ');
+                    const aL = (aP[aP.length - 1] || '').replace('.', '');
+                    const bL = (bP[bP.length - 1] || '').replace('.', '');
+                    return aL.localeCompare(bL, 'fr') || aP[0].localeCompare(bP[0], 'fr');
+                });
+            }
+        }
+
+        function onStudentSearch() {
+            const input = document.getElementById('studentSearch');
+            const query = input.value.trim().toLowerCase();
+            const list = document.getElementById('studentSuggestions');
+
+            if (!classRoster.length || !query) {
+                hideSuggestions();
+                return;
+            }
+
+            const matches = classRoster.filter(name =>
+                name.toLowerCase().includes(query)
+            );
+
+            if (matches.length === 0) {
+                hideSuggestions();
+                return;
+            }
+
+            selectedSuggestion = -1;
+            list.innerHTML = matches.map((name, i) =>
+                `<div class="autocomplete-item" onmousedown="pickStudent('${name.replace(/'/g, "\\'")}')">${name}</div>`
+            ).join('');
+            list.style.display = 'block';
+        }
+
+        function pickStudent(name) {
+            document.getElementById('studentSearch').value = name;
+            hideSuggestions();
+        }
+
+        function hideSuggestions() {
+            document.getElementById('studentSuggestions').style.display = 'none';
+        }
+
+        // Keyboard navigation in suggestions
+        document.addEventListener('keydown', (e) => {
+            const list = document.getElementById('studentSuggestions');
+            if (list.style.display === 'none') return;
+            const items = list.querySelectorAll('.autocomplete-item');
+            if (!items.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedSuggestion = Math.min(selectedSuggestion + 1, items.length - 1);
+                items.forEach((it, i) => it.classList.toggle('active', i === selectedSuggestion));
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedSuggestion = Math.max(selectedSuggestion - 1, 0);
+                items.forEach((it, i) => it.classList.toggle('active', i === selectedSuggestion));
+            } else if (e.key === 'Enter' && selectedSuggestion >= 0) {
+                e.preventDefault();
+                pickStudent(items[selectedSuggestion].textContent);
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#studentSearch') && !e.target.closest('#studentSuggestions')) {
+                hideSuggestions();
+            }
+        });
+
         // ============ INTERACTIVE MODE ============
         async function startInteractive() {
-            const name = document.getElementById('studentName').value.trim();
+            const searchVal = document.getElementById('studentSearch').value.trim();
             const codeInput = document.getElementById('classCode').value.trim().toUpperCase();
-            const initial = document.getElementById('studentInitial').value.trim().toUpperCase();
 
-            if (!name) {
-                showToast('student-toast', 'Entre ton prénom', 'error');
+            if (!searchVal) {
+                showToast('student-toast', 'Entre ton nom', 'error');
                 return;
             }
 
             if (codeInput) {
-                if (!initial) {
-                    showToast('student-toast', 'Entre l\'initiale de ton nom de famille', 'error');
-                    return;
+                // With class code: student must pick from roster or type exact "Prénom I."
+                if (!classRosterClassId) {
+                    const classData = await verifyClassCode(codeInput);
+                    if (!classData) {
+                        showToast('student-toast', 'Code classe invalide.', 'error');
+                        return;
+                    }
+                    classRosterClassId = classData.id;
+                    await loadClassRoster(classData.id);
                 }
-                // Verify class code
-                const classData = await verifyClassCode(codeInput);
-                if (!classData) {
-                    showToast('student-toast', 'Code classe invalide. Vérifie auprès de ton enseignant.', 'error');
-                    return;
+                studentClassId = classRosterClassId;
+
+                // Check if the entered value matches a roster name
+                const match = classRoster.find(n => n.toLowerCase() === searchVal.toLowerCase());
+                if (match) {
+                    state.currentStudent = match;
+                } else {
+                    // Not in roster — accept as-is (new student or free entry)
+                    state.currentStudent = searchVal;
                 }
-                studentClassId = classData.id;
-                state.currentStudent = name + ' ' + initial + '.';
             } else {
                 studentClassId = null;
-                state.currentStudent = name;
+                state.currentStudent = searchVal;
             }
 
             document.getElementById('interactive-content').style.display = 'block';
