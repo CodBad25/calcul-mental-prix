@@ -2183,9 +2183,13 @@
             }
         }
 
+        function normalize(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        }
+
         function onStudentSearch() {
             const input = document.getElementById('studentSearch');
-            const query = input.value.trim().toLowerCase();
+            const query = normalize(input.value.trim());
             const list = document.getElementById('studentSuggestions');
 
             if (!classRoster.length || !query) {
@@ -2194,7 +2198,7 @@
             }
 
             const matches = classRoster.filter(name =>
-                name.toLowerCase().includes(query)
+                normalize(name).includes(query)
             );
 
             if (matches.length === 0) {
@@ -2272,7 +2276,7 @@
                 studentClassId = classRosterClassId;
 
                 // Check if the entered value matches a roster name
-                const match = classRoster.find(n => n.toLowerCase() === searchVal.toLowerCase());
+                const match = classRoster.find(n => normalize(n) === normalize(searchVal));
                 if (match) {
                     state.currentStudent = match;
                 } else {
