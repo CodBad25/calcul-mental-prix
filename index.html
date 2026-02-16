@@ -1793,8 +1793,9 @@
             if (error) return;
             teacherClasses = data || [];
             renderClassList();
-            if (teacherClasses.length > 0 && !activeClassId) {
-                selectClass(teacherClasses[0].id);
+            if (teacherClasses.length > 0) {
+                // Auto-select first class if none active, or re-apply toolbar for active class
+                await selectClass(activeClassId || teacherClasses[0].id);
             }
         }
 
