@@ -1409,7 +1409,7 @@
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <div class="container">
         <!-- NAVIGATION -->
         <div class="nav-bar">
@@ -1627,9 +1627,14 @@
         const SUPABASE_URL = 'https://ehxdbjgvqzpttuafwufh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoeGRiamd2cXpwdHR1YWZ3dWZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDA5NDEsImV4cCI6MjA4NjMxNjk0MX0.6QETEpU6VR_KvI4gDRbyxeqLmYZn3vb0EwqkHrh7DK4';
 
-        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: { persistSession: true, autoRefreshToken: true }
-        });
+        let sbClient = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                    auth: { persistSession: true, autoRefreshToken: true }
+                });
+            }
+        } catch(e) { console.warn('Supabase non disponible:', e); }
 
         // ============ SUPABASE STATE ============
         let currentTeacher = null; // auth user
@@ -1639,6 +1644,7 @@
 
         // ============ TEACHER AUTH ============
         async function checkSession() {
+            if (!sbClient) return;
             // Listen for password recovery event
             sbClient.auth.onAuthStateChange(async (event, session) => {
                 if (event === 'PASSWORD_RECOVERY') {
@@ -1667,6 +1673,7 @@
         }
 
         async function resetPassword() {
+            if (!sbClient) { showToast('auth-toast', 'Service non disponible', 'error'); return; }
             const email = document.getElementById('authEmail').value.trim();
             if (!email) { showToast('auth-toast', 'Entre ton email pour réinitialiser le mot de passe', 'error'); return; }
             const { error } = await sbClient.auth.resetPasswordForEmail(email, {
@@ -1677,6 +1684,7 @@
         }
 
         async function confirmNewPassword() {
+            if (!sbClient) return;
             const newPwd = document.getElementById('newPassword').value;
             if (!newPwd || newPwd.length < 6) { showToast('reset-toast', 'Le mot de passe doit faire au moins 6 caractères', 'error'); return; }
             const { error } = await sbClient.auth.updateUser({ password: newPwd });
@@ -1719,6 +1727,7 @@
             const password = document.getElementById('authPassword').value;
             if (!email || !password) { showToast('auth-toast', 'Email et mot de passe requis', 'error'); return; }
 
+            if (!sbClient) { showToast('auth-toast', 'Service non disponible', 'error'); return; }
             const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
             if (error) { showToast('auth-toast', error.message, 'error'); return; }
             currentTeacher = data.user;
@@ -1733,6 +1742,7 @@
             if (!email || !password) { showToast('auth-toast', 'Email et mot de passe requis', 'error'); return; }
             if (password.length < 6) { showToast('auth-toast', 'Le mot de passe doit faire au moins 6 caractères', 'error'); return; }
 
+            if (!sbClient) { showToast('auth-toast', 'Service non disponible', 'error'); return; }
             const { data, error } = await sbClient.auth.signUp({
                 email,
                 password,
@@ -1756,7 +1766,7 @@
         }
 
         async function teacherLogout() {
-            await sbClient.auth.signOut();
+            if (sbClient) await sbClient.auth.signOut();
             currentTeacher = null;
             teacherClasses = [];
             activeClassId = null;
@@ -1785,7 +1795,7 @@
         }
 
         async function createClass() {
-            if (!currentTeacher) return;
+            if (!currentTeacher || !sbClient) return;
             const name = document.getElementById('newClassName').value.trim();
             if (!name) { showToast('classes-toast', 'Entrez un nom de classe', 'error'); return; }
 
@@ -1810,7 +1820,7 @@
         }
 
         async function loadClasses() {
-            if (!currentTeacher) return;
+            if (!currentTeacher || !sbClient) return;
             const { data, error } = await sbClient.from('calcul_classes')
                 .select('*').eq('teacher_id', currentTeacher.id).order('created_at');
             if (error) return;
@@ -1863,6 +1873,7 @@
 
         // ============ STUDENT SUPABASE FUNCTIONS ============
         async function verifyClassCode(code) {
+            if (!sbClient) return null;
             const { data, error } = await sbClient.from('calcul_classes')
                 .select('id, name').eq('code', code.toUpperCase()).single();
             if (error || !data) return null;
@@ -1870,6 +1881,7 @@
         }
 
         async function loadStudentResults(classId, studentName) {
+            if (!sbClient) return [];
             const { data } = await sbClient.from('calcul_results')
                 .select('*').eq('class_id', classId).eq('student_name', studentName)
                 .order('created_at', { ascending: false });
@@ -1877,6 +1889,7 @@
         }
 
         async function saveResultToSupabase(classId, studentName, series, score, total, timeSpent) {
+            if (!sbClient) return;
             await sbClient.from('calcul_results').insert({
                 class_id: classId,
                 student_name: studentName,
@@ -1888,6 +1901,7 @@
         }
 
         async function loadDashboardResults(classId) {
+            if (!sbClient) return [];
             const { data } = await sbClient.from('calcul_results')
                 .select('*').eq('class_id', classId).order('created_at');
             return data || [];
