@@ -1725,6 +1725,7 @@
                 // Email confirmation disabled — logged in directly
                 currentTeacher = data.user;
                 showLoggedIn();
+                await loadClasses();
                 showToast('classes-toast', 'Compte créé ! Vous pouvez créer vos classes.', 'success');
             } else {
                 // Email confirmation required
@@ -1749,8 +1750,8 @@
             document.getElementById('auth-logged-out').style.display = 'none';
             document.getElementById('auth-logged-in').style.display = 'block';
             document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('classes-section').style.display = 'block';
-            document.getElementById('teacher-toolbar').style.display = 'none';
+            // Don't touch classes-section or teacher-toolbar here
+            // loadClasses() → selectClass() will handle showing toolbar or classes
         }
 
         // ============ CLASS MANAGEMENT ============
@@ -1794,8 +1795,11 @@
             teacherClasses = data || [];
             renderClassList();
             if (teacherClasses.length > 0) {
-                // Auto-select first class if none active, or re-apply toolbar for active class
                 await selectClass(activeClassId || teacherClasses[0].id);
+            } else {
+                // No classes yet — show classes section so teacher can create one
+                document.getElementById('classes-section').style.display = 'block';
+                document.getElementById('teacher-toolbar').style.display = 'none';
             }
         }
 
