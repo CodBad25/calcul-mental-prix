@@ -715,6 +715,11 @@
             display: block;
         }
 
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .students-table {
             width: 100%;
             border-collapse: collapse;
@@ -1404,6 +1409,47 @@
             .code-display {
                 font-size: 16px;
             }
+
+            .students-table {
+                font-size: 10px;
+            }
+
+            .students-table th {
+                padding: 4px 3px;
+                white-space: nowrap;
+            }
+
+            .students-table td {
+                padding: 3px 3px;
+                white-space: nowrap;
+            }
+
+            .teacher-toolbar-bar {
+                padding: 5px 8px;
+                font-size: 12px;
+            }
+
+            .toolbar-class-name {
+                font-size: 14px;
+            }
+
+            .toolbar-code {
+                font-size: 10px;
+            }
+
+            .toolbar-btn {
+                padding: 3px 6px;
+                font-size: 10px;
+            }
+
+            .toolbar-other-btn {
+                padding: 2px 6px;
+                font-size: 10px;
+            }
+
+            .toolbar-switch-label {
+                font-size: 9px;
+            }
         }
     </style>
 </head>
@@ -1598,25 +1644,26 @@
 
             <!-- Dashboard -->
             <div id="dashboard-content">
-
+              <div class="table-scroll">
                 <table class="students-table" id="dashboardTable">
                     <thead>
                         <tr>
                             <th>Élève</th>
-                            <th>Série 1</th>
-                            <th>Série 2</th>
-                            <th>Série 3</th>
-                            <th>Série 4</th>
-                            <th>Série 5</th>
-                            <th>Série 6</th>
-                            <th>Série 7</th>
-                            <th>Série 8</th>
-                            <th>Tentatives</th>
+                            <th>S1</th>
+                            <th>S2</th>
+                            <th>S3</th>
+                            <th>S4</th>
+                            <th>S5</th>
+                            <th>S6</th>
+                            <th>S7</th>
+                            <th>S8</th>
+                            <th>Essais</th>
                         </tr>
                     </thead>
                     <tbody id="dashboardBody">
                     </tbody>
                 </table>
+              </div>
             </div>
         </div>
 
