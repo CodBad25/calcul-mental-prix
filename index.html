@@ -1628,6 +1628,7 @@
                 <div class="class-create-form">
                     <input type="text" id="newClassName" placeholder="Nom (ex: 6A)">
                     <button class="auth-btn primary" onclick="createClass()">Créer une classe</button>
+                    <button class="auth-btn" style="background:#f59e0b;color:#fff;" onclick="createDemoClass()">Classe Démo</button>
                 </div>
                 <div class="class-list" id="class-list"></div>
                 <div id="classes-toast" class="toast-msg"></div>
@@ -1643,8 +1644,10 @@
                     <div class="toolbar-right">
                         <span id="toolbar-other-classes"></span>
                         <button class="toolbar-btn" onclick="showClassSelector()">+ Classe</button>
+                        <button class="toolbar-btn" onclick="triggerCSVImport()">Importer</button>
                         <button class="toolbar-btn export" onclick="exportCSV()">CSV</button>
                         <button class="toolbar-btn logout" onclick="teacherLogout()">Quitter</button>
+                        <input type="file" id="csvFileInput" accept=".csv,.txt" style="display:none" onchange="handleCSVImport(event)">
                     </div>
                 </div>
             </div>
@@ -2964,6 +2967,8 @@
                 const students = {};
                 for (const r of results) {
                     if (!students[r.student_name]) students[r.student_name] = { bestScores: {}, attempts: 0 };
+                    // series=0 is a placeholder from CSV import (student exists but no quiz yet)
+                    if (r.series === 0) continue;
                     students[r.student_name].attempts++;
                     if (!students[r.student_name].bestScores[r.series] || r.score > students[r.student_name].bestScores[r.series]) {
                         students[r.student_name].bestScores[r.series] = r.score;
@@ -3004,6 +3009,159 @@
                 return `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
             }).join('');
             tbody.innerHTML = rows || '<tr><td colspan="10" style="text-align:center;color:#999;padding:20px;">Aucun résultat pour le moment</td></tr>';
+        }
+
+        // ============ CSV IMPORT ============
+        function triggerCSVImport() {
+            document.getElementById('csvFileInput').click();
+        }
+
+        async function handleCSVImport(event) {
+            const file = event.target.files[0];
+            if (!file || !currentTeacher || !activeClassId || !sbClient) return;
+
+            const text = await file.text();
+            // Detect separator: ; or , or tab
+            const firstLine = text.split('\n')[0];
+            const sep = firstLine.includes(';') ? ';' : firstLine.includes('\t') ? '\t' : ',';
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+            // Try to find Nom/Prénom columns in header
+            const header = lines[0].toLowerCase().split(sep).map(h => h.trim().replace(/"/g, ''));
+            let nomIdx = header.findIndex(h => h === 'nom' || h === 'nom de famille');
+            let prenomIdx = header.findIndex(h => h.startsWith('prénom') || h.startsWith('prenom'));
+
+            let students = [];
+            if (nomIdx !== -1 && prenomIdx !== -1) {
+                // CSV with headers: extract Prénom + initial of Nom
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(sep).map(c => c.trim().replace(/"/g, ''));
+                    const nom = cols[nomIdx] || '';
+                    const prenom = cols[prenomIdx] || '';
+                    if (prenom && nom) {
+                        students.push(prenom.charAt(0).toUpperCase() + prenom.slice(1).toLowerCase() + ' ' + nom.charAt(0).toUpperCase() + '.');
+                    }
+                }
+            } else {
+                // No recognized headers — try single column of names (Prénom Nom or Nom Prénom)
+                const startIdx = /^[a-zA-Zéèêëàâäôöûüùïîç\s]+$/i.test(lines[0].replace(/[;,"\t]/g, '').trim()) &&
+                    lines[0].split(sep).length <= 2 ? 0 : 1; // skip header if it looks like one
+                for (let i = startIdx; i < lines.length; i++) {
+                    const raw = lines[i].split(sep).map(c => c.trim().replace(/"/g, '')).filter(c => c);
+                    if (raw.length >= 2) {
+                        // 2 columns: assume Nom ; Prénom
+                        const nom = raw[0], prenom = raw[1];
+                        students.push(prenom.charAt(0).toUpperCase() + prenom.slice(1).toLowerCase() + ' ' + nom.charAt(0).toUpperCase() + '.');
+                    } else if (raw.length === 1 && raw[0].includes(' ')) {
+                        // Single column "Prénom Nom"
+                        const parts = raw[0].split(/\s+/);
+                        const prenom = parts[0], nom = parts[parts.length - 1];
+                        students.push(prenom.charAt(0).toUpperCase() + prenom.slice(1).toLowerCase() + ' ' + nom.charAt(0).toUpperCase() + '.');
+                    }
+                }
+            }
+
+            if (students.length === 0) {
+                alert('Aucun élève trouvé dans le fichier. Vérifiez le format (colonnes Nom/Prénom).');
+                event.target.value = '';
+                return;
+            }
+
+            // Remove duplicates
+            students = [...new Set(students)];
+
+            // Insert a placeholder result (series 0, score 0) so they appear in dashboard
+            const inserts = students.map(name => ({
+                class_id: activeClassId,
+                student_name: name,
+                series: 0,
+                score: 0,
+                total: 0
+            }));
+
+            const { error } = await sbClient.from('calcul_results').insert(inserts);
+            if (error) {
+                alert('Erreur import : ' + error.message);
+            } else {
+                alert(`${students.length} élèves importés dans la classe.`);
+                await refreshDashboard();
+            }
+            event.target.value = '';
+        }
+
+        // ============ DEMO CLASS ============
+        async function createDemoClass() {
+            if (!currentTeacher || !sbClient) return;
+
+            // Generate unique code
+            let code, exists = true;
+            while (exists) {
+                code = generateClassCode();
+                const { data } = await sbClient.from('calcul_classes').select('id').eq('code', code);
+                exists = data && data.length > 0;
+            }
+
+            const { data: cls, error } = await sbClient.from('calcul_classes').insert({
+                teacher_id: currentTeacher.id,
+                name: 'Démo',
+                code: code
+            }).select().single();
+
+            if (error) { showToast('classes-toast', 'Erreur : ' + error.message, 'error'); return; }
+
+            // Generate 22 fake students with varied results
+            const prenoms = [
+                'Léa', 'Hugo', 'Emma', 'Lucas', 'Chloé', 'Nathan', 'Jade', 'Enzo',
+                'Manon', 'Théo', 'Camille', 'Maxime', 'Sarah', 'Louis', 'Inès',
+                'Raphaël', 'Zoé', 'Arthur', 'Lina', 'Mathis', 'Clara', 'Adam'
+            ];
+            const noms = ['B', 'D', 'L', 'M', 'R', 'G', 'P', 'T', 'S', 'C', 'F', 'A', 'H', 'N', 'V', 'J', 'K', 'E', 'W', 'Z', 'Q', 'X'];
+
+            const results = [];
+            for (let i = 0; i < prenoms.length; i++) {
+                const studentName = prenoms[i] + ' ' + noms[i] + '.';
+                // Each student has done series 1-4, with varied scores
+                // Strong students: 11-15, Medium: 7-12, Weak: 3-9
+                const level = i % 3; // 0=strong, 1=medium, 2=weak
+                const seriesCount = i < 15 ? 4 : (i < 19 ? 3 : 2); // some only did 2-3 series
+
+                for (let s = 1; s <= seriesCount; s++) {
+                    let baseScore;
+                    if (level === 0) baseScore = 11 + Math.floor(Math.random() * 5); // 11-15
+                    else if (level === 1) baseScore = 7 + Math.floor(Math.random() * 6); // 7-12
+                    else baseScore = 3 + Math.floor(Math.random() * 7); // 3-9
+
+                    results.push({
+                        class_id: cls.id,
+                        student_name: studentName,
+                        series: s,
+                        score: Math.min(baseScore, 15),
+                        total: 15,
+                        time_spent: 120 + Math.floor(Math.random() * 60)
+                    });
+
+                    // Some students have a 2nd attempt on series 1 (improvement)
+                    if (s === 1 && Math.random() > 0.5) {
+                        results.push({
+                            class_id: cls.id,
+                            student_name: studentName,
+                            series: 1,
+                            score: Math.min(baseScore + Math.floor(Math.random() * 3), 15),
+                            total: 15,
+                            time_spent: 100 + Math.floor(Math.random() * 60)
+                        });
+                    }
+                }
+            }
+
+            // Insert all results in batch
+            const { error: insertErr } = await sbClient.from('calcul_results').insert(results);
+            if (insertErr) {
+                showToast('classes-toast', 'Erreur données démo : ' + insertErr.message, 'error');
+            } else {
+                showToast('classes-toast', `Classe "Démo" créée avec ${prenoms.length} élèves et des résultats fictifs !`, 'success');
+            }
+            await loadClasses();
         }
 
         function exportCSV() {
