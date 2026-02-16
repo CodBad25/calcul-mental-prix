@@ -776,8 +776,8 @@
             }
 
             .nav-bar, .print-controls, .student-name-form, .series-selector,
-            .interactive-quiz, .student-profile, .teacher-login,
-            .dashboard-content, #interactive-mode, #teacher-mode {
+            .interactive-quiz, .student-profile, .teacher-login, .auth-section,
+            .classes-section, .dashboard-content, #interactive-mode, #teacher-mode {
                 display: none !important;
             }
 
@@ -1049,10 +1049,280 @@
         .series-chip:hover {
             border-color: #1e40af;
         }
+
+        /* ============ SUPABASE AUTH & CLASSES ============ */
+        .auth-section {
+            background: #e0e7ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .auth-section h3 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .auth-form input {
+            padding: 10px 14px;
+            border: 2px solid #1e40af;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .auth-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .auth-btn.primary {
+            background: #1e40af;
+            color: white;
+        }
+
+        .auth-btn.primary:hover {
+            background: #1e3a8a;
+        }
+
+        .auth-btn.secondary {
+            background: white;
+            color: #1e40af;
+            border: 2px solid #1e40af;
+        }
+
+        .auth-btn.danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .auth-btn.danger:hover {
+            background: #b91c1c;
+        }
+
+        .auth-connected {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .auth-email {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .toast-msg {
+            padding: 10px 16px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .toast-msg.success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            display: block;
+        }
+
+        .toast-msg.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .classes-section {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c7d2fe;
+        }
+
+        .classes-section h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .class-create-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .class-create-form input {
+            padding: 8px 14px;
+            border: 2px solid #c7d2fe;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .class-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .class-chip {
+            padding: 10px 16px;
+            border: 2px solid #c7d2fe;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .class-chip:hover {
+            border-color: #1e40af;
+        }
+
+        .class-chip.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        .class-chip .class-code {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.8;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .code-display {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e40af;
+            letter-spacing: 4px;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border: 3px dashed #1e40af;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .student-form-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .student-form-fields .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .student-form-fields .field-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .student-form-fields input {
+            padding: 10px 15px;
+            border: 2px solid #1e40af;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .student-form-fields input.small {
+            width: 60px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .class-delete-btn {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+
+        .class-delete-btn:hover {
+            opacity: 1;
+            background: #fef2f2;
+        }
+
+        @media (max-width: 768px) {
+            .auth-form {
+                flex-direction: column;
+            }
+
+            .auth-form input {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .auth-connected {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .class-create-form {
+                flex-direction: column;
+            }
+
+            .class-create-form input {
+                width: 100%;
+            }
+
+            .student-form-fields {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .student-form-fields input {
+                width: 100%;
+            }
+
+            .student-form-fields input.small {
+                width: 100%;
+            }
+
+            .code-display {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <div class="container">
         <!-- NAVIGATION -->
         <div class="nav-bar">
@@ -1095,10 +1365,27 @@
 
         <!-- ============ INTERACTIVE MODE ============ -->
         <div id="interactive-mode" class="mode-section">
-            <div class="student-name-form">
+            <div class="student-name-form" id="student-name-form">
                 <h2>Bienvenue au calcul mental !</h2>
-                <input type="text" id="studentName" placeholder="Entre ton prénom">
-                <button onclick="startInteractive()">Commencer</button>
+                <div class="student-form-fields">
+                    <div class="field-group">
+                        <label>Code classe (optionnel)</label>
+                        <input type="text" id="classCode" placeholder="Donné par ton enseignant" maxlength="6" style="width:200px; text-transform: uppercase;">
+                    </div>
+                    <div class="field-group">
+                        <label>Prénom *</label>
+                        <input type="text" id="studentName" placeholder="Ton prénom" style="width:160px;">
+                    </div>
+                    <div class="field-group">
+                        <label>Initiale du nom</label>
+                        <input type="text" id="studentInitial" placeholder="B" maxlength="1" class="small">
+                    </div>
+                    <div class="field-group">
+                        <label>&nbsp;</label>
+                        <button onclick="startInteractive()" style="padding:10px 25px;background:#1e40af;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:600;font-size:14px;">Commencer</button>
+                    </div>
+                </div>
+                <div id="student-toast" class="toast-msg"></div>
             </div>
 
             <div id="interactive-content" style="display: none;">
@@ -1163,7 +1450,43 @@
 
         <!-- ============ TEACHER DASHBOARD ============ -->
         <div id="teacher-mode" class="mode-section">
-            <div id="dashboard-content" class="dashboard-content" style="display: block;">
+            <!-- Auth Section -->
+            <div class="auth-section" id="auth-section">
+                <div id="auth-logged-out">
+                    <h3>Connexion enseignant</h3>
+                    <div class="auth-form">
+                        <input type="email" id="authEmail" placeholder="Email">
+                        <input type="password" id="authPassword" placeholder="Mot de passe">
+                        <button class="auth-btn primary" onclick="teacherLogin()">Se connecter</button>
+                        <button class="auth-btn secondary" onclick="teacherSignup()">Créer un compte</button>
+                    </div>
+                    <div id="auth-toast" class="toast-msg"></div>
+                </div>
+                <div id="auth-logged-in" style="display:none;">
+                    <div class="auth-connected">
+                        <span class="auth-email" id="auth-user-email"></span>
+                        <button class="auth-btn danger" onclick="teacherLogout()">Déconnexion</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classes Section (visible only when logged in) -->
+            <div class="classes-section" id="classes-section" style="display:none;">
+                <h3>Mes classes</h3>
+                <div class="class-create-form">
+                    <input type="text" id="newClassName" placeholder="Nom (ex: 6A)">
+                    <button class="auth-btn primary" onclick="createClass()">Créer une classe</button>
+                </div>
+                <div class="class-list" id="class-list"></div>
+                <div id="active-class-code" style="display:none;">
+                    <p style="font-size:13px;color:#666;margin-bottom:5px;">Code à communiquer aux élèves :</p>
+                    <div class="code-display" id="class-code-display"></div>
+                </div>
+                <div id="classes-toast" class="toast-msg"></div>
+            </div>
+
+            <!-- Dashboard -->
+            <div id="dashboard-content">
                 <h2 style="color: #1e40af; margin-bottom: 20px;">Suivi de classe</h2>
 
                 <div style="margin-bottom: 20px;">
@@ -1194,6 +1517,178 @@
     </div>
 
     <script>
+        // ============ SUPABASE CONFIG ============
+        const SUPABASE_URL = 'https://ehxdbjgvqzpttuafwufh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoeGRiamd2cXpwdHR1YWZ3dWZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNTIwNDYsImV4cCI6MjA1MzgyODA0Nn0.PlSINeYBCkOmEMm3IN6lhn-xYFLjxfms4FPvf8Nzp7g';
+
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
+        });
+
+        // ============ SUPABASE STATE ============
+        let currentTeacher = null; // auth user
+        let teacherClasses = [];   // [{id, name, code}]
+        let activeClassId = null;  // selected class for dashboard
+        let studentClassId = null; // class_id for current student session
+
+        // ============ TEACHER AUTH ============
+        async function checkSession() {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (session) {
+                currentTeacher = session.user;
+                showLoggedIn();
+                await loadClasses();
+            }
+        }
+
+        function showToast(elemId, msg, type) {
+            const el = document.getElementById(elemId);
+            el.className = 'toast-msg ' + type;
+            el.textContent = msg;
+            setTimeout(() => { el.className = 'toast-msg'; }, 4000);
+        }
+
+        async function teacherLogin() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+            if (!email || !password) { showToast('auth-toast', 'Email et mot de passe requis', 'error'); return; }
+
+            const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
+            if (error) { showToast('auth-toast', error.message, 'error'); return; }
+            currentTeacher = data.user;
+            showLoggedIn();
+            await loadClasses();
+            refreshDashboard();
+        }
+
+        async function teacherSignup() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+            if (!email || !password) { showToast('auth-toast', 'Email et mot de passe requis', 'error'); return; }
+
+            const { data, error } = await sbClient.auth.signUp({ email, password });
+            if (error) { showToast('auth-toast', error.message, 'error'); return; }
+            currentTeacher = data.user;
+            showLoggedIn();
+            showToast('classes-toast', 'Compte créé ! Vous pouvez créer vos classes.', 'success');
+        }
+
+        async function teacherLogout() {
+            await sbClient.auth.signOut();
+            currentTeacher = null;
+            teacherClasses = [];
+            activeClassId = null;
+            document.getElementById('auth-logged-in').style.display = 'none';
+            document.getElementById('auth-logged-out').style.display = 'block';
+            document.getElementById('classes-section').style.display = 'none';
+            refreshDashboard();
+        }
+
+        function showLoggedIn() {
+            document.getElementById('auth-logged-out').style.display = 'none';
+            document.getElementById('auth-logged-in').style.display = 'block';
+            document.getElementById('auth-user-email').textContent = currentTeacher.email;
+            document.getElementById('classes-section').style.display = 'block';
+        }
+
+        // ============ CLASS MANAGEMENT ============
+        function generateClassCode() {
+            const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no O/0/I/1/L
+            let code = '';
+            for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+            return code;
+        }
+
+        async function createClass() {
+            if (!currentTeacher) return;
+            const name = document.getElementById('newClassName').value.trim();
+            if (!name) { showToast('classes-toast', 'Entrez un nom de classe', 'error'); return; }
+
+            // Generate unique code
+            let code, exists = true;
+            while (exists) {
+                code = generateClassCode();
+                const { data } = await sbClient.from('calcul_classes').select('id').eq('code', code);
+                exists = data && data.length > 0;
+            }
+
+            const { error } = await sbClient.from('calcul_classes').insert({
+                teacher_id: currentTeacher.id,
+                name: name,
+                code: code
+            });
+
+            if (error) { showToast('classes-toast', 'Erreur : ' + error.message, 'error'); return; }
+            document.getElementById('newClassName').value = '';
+            showToast('classes-toast', `Classe "${name}" créée ! Code : ${code}`, 'success');
+            await loadClasses();
+        }
+
+        async function loadClasses() {
+            if (!currentTeacher) return;
+            const { data, error } = await sbClient.from('calcul_classes')
+                .select('*').eq('teacher_id', currentTeacher.id).order('created_at');
+            if (error) return;
+            teacherClasses = data || [];
+            renderClassList();
+            if (teacherClasses.length > 0 && !activeClassId) {
+                selectClass(teacherClasses[0].id);
+            }
+        }
+
+        function renderClassList() {
+            const container = document.getElementById('class-list');
+            container.innerHTML = teacherClasses.map(c => `
+                <button class="class-chip ${c.id === activeClassId ? 'active' : ''}" onclick="selectClass('${c.id}')">
+                    ${c.name}
+                    <span class="class-code">${c.code}</span>
+                </button>
+            `).join('');
+        }
+
+        async function selectClass(classId) {
+            activeClassId = classId;
+            renderClassList();
+            const cls = teacherClasses.find(c => c.id === classId);
+            if (cls) {
+                document.getElementById('active-class-code').style.display = 'block';
+                document.getElementById('class-code-display').textContent = cls.code;
+            }
+            await refreshDashboard();
+        }
+
+        // ============ STUDENT SUPABASE FUNCTIONS ============
+        async function verifyClassCode(code) {
+            const { data, error } = await sbClient.from('calcul_classes')
+                .select('id, name').eq('code', code.toUpperCase()).single();
+            if (error || !data) return null;
+            return data;
+        }
+
+        async function loadStudentResults(classId, studentName) {
+            const { data } = await sbClient.from('calcul_results')
+                .select('*').eq('class_id', classId).eq('student_name', studentName)
+                .order('created_at', { ascending: false });
+            return data || [];
+        }
+
+        async function saveResultToSupabase(classId, studentName, series, score, total, timeSpent) {
+            await sbClient.from('calcul_results').insert({
+                class_id: classId,
+                student_name: studentName,
+                series: series,
+                score: score,
+                total: total,
+                time_spent: timeSpent
+            });
+        }
+
+        async function loadDashboardResults(classId) {
+            const { data } = await sbClient.from('calcul_results')
+                .select('*').eq('class_id', classId).order('created_at');
+            return data || [];
+        }
+
         // ============ CONFIGURATION ============
         const ITEMS = [
             { sing: 'croissant', plur: 'croissants', art: 'un' },
@@ -1248,7 +1743,7 @@
                 loadStudentProfile();
             }
             if (mode === 'teacher') {
-                refreshDashboard();
+                checkSession().then(() => refreshDashboard());
             }
         }
 
@@ -1289,29 +1784,73 @@
         }
 
         // ============ INTERACTIVE MODE ============
-        function startInteractive() {
+        async function startInteractive() {
             const name = document.getElementById('studentName').value.trim();
+            const codeInput = document.getElementById('classCode').value.trim().toUpperCase();
+            const initial = document.getElementById('studentInitial').value.trim().toUpperCase();
+
             if (!name) {
-                alert('Veuillez entrer votre prénom');
+                showToast('student-toast', 'Entre ton prénom', 'error');
                 return;
             }
-            state.currentStudent = name;
+
+            if (codeInput) {
+                if (!initial) {
+                    showToast('student-toast', 'Entre l\'initiale de ton nom de famille', 'error');
+                    return;
+                }
+                // Verify class code
+                const classData = await verifyClassCode(codeInput);
+                if (!classData) {
+                    showToast('student-toast', 'Code classe invalide. Vérifie auprès de ton enseignant.', 'error');
+                    return;
+                }
+                studentClassId = classData.id;
+                state.currentStudent = name + ' ' + initial + '.';
+            } else {
+                studentClassId = null;
+                state.currentStudent = name;
+            }
+
             document.getElementById('interactive-content').style.display = 'block';
-            document.querySelector('.student-name-form').style.display = 'none';
-            loadStudentProfile();
+            document.getElementById('student-name-form').style.display = 'none';
+            await loadStudentProfile();
             renderSeriesSelector();
         }
 
-        function loadStudentProfile() {
+        async function loadStudentProfile() {
             if (!state.currentStudent) return;
 
-            const studentData = getStudentData(state.currentStudent);
+            let studentData;
+
+            if (studentClassId) {
+                // Load from Supabase
+                const results = await loadStudentResults(studentClassId, state.currentStudent);
+                studentData = { attempts: [], bestScores: {} };
+                for (const r of results) {
+                    studentData.attempts.push({
+                        date: r.created_at.split('T')[0],
+                        series: r.series,
+                        score: r.score,
+                        total: r.total,
+                        time: r.time_spent ? Math.floor(r.time_spent / 60) + ':' + String(r.time_spent % 60).padStart(2, '0') : '-'
+                    });
+                    if (!studentData.bestScores[r.series] || r.score > studentData.bestScores[r.series]) {
+                        studentData.bestScores[r.series] = r.score;
+                    }
+                }
+            } else {
+                studentData = getStudentData(state.currentStudent);
+            }
+
             document.getElementById('profileName').textContent = state.currentStudent;
             document.getElementById('totalAttempts').textContent = studentData.attempts.length;
 
             if (studentData.attempts.length > 0) {
                 const bestAttempt = Math.max(...studentData.attempts.map(a => a.score));
                 document.getElementById('bestScoreOverall').textContent = bestAttempt + '/15';
+            } else {
+                document.getElementById('bestScoreOverall').textContent = '0/15';
             }
 
             const progressHtml = Array.from({length: 8}, (_, i) => {
@@ -1332,11 +1871,20 @@
             document.getElementById('seriesProgress').innerHTML = progressHtml;
         }
 
-        function renderSeriesSelector() {
+        async function renderSeriesSelector() {
+            let bestScores = {};
+            if (studentClassId) {
+                const results = await loadStudentResults(studentClassId, state.currentStudent);
+                for (const r of results) {
+                    if (!bestScores[r.series] || r.score > bestScores[r.series]) bestScores[r.series] = r.score;
+                }
+            } else {
+                bestScores = getStudentData(state.currentStudent).bestScores;
+            }
+
             const html = Array.from({length: 8}, (_, i) => {
                 const seriesNum = i + 1;
-                const studentData = getStudentData(state.currentStudent);
-                const bestScore = studentData.bestScores[seriesNum];
+                const bestScore = bestScores[seriesNum];
                 const scoreText = bestScore !== undefined ? `Meilleur: ${bestScore}/15` : 'Pas encore tentée';
                 return `
                     <button class="series-card" onclick="selectSeries(${seriesNum})">
@@ -1695,7 +2243,7 @@
             }
         }
 
-        function submitQuiz() {
+        async function submitQuiz() {
             clearInterval(state.timerInterval);
             state.submitted = true;
 
@@ -1708,13 +2256,14 @@
                 if (correct === userAnswer) score++;
             });
 
-            const studentData = getStudentData(state.currentStudent);
             const seriesNum = state.currentSeries;
+            const elapsed = 180 - state.timeRemaining;
 
+            // Always save to localStorage
+            const studentData = getStudentData(state.currentStudent);
             if (!studentData.bestScores[seriesNum] || score > studentData.bestScores[seriesNum]) {
                 studentData.bestScores[seriesNum] = score;
             }
-
             studentData.attempts.push({
                 date: new Date().toISOString().split('T')[0],
                 series: seriesNum,
@@ -1722,11 +2271,15 @@
                 total: 15,
                 time: getTimeString()
             });
-
             saveStudentData(state.currentStudent, studentData);
 
+            // Also save to Supabase if student has a class
+            if (studentClassId) {
+                await saveResultToSupabase(studentClassId, state.currentStudent, seriesNum, score, 15, elapsed);
+            }
+
             showResults(score);
-            loadStudentProfile();
+            await loadStudentProfile();
         }
 
         function normalizeAnswer(answer) {
@@ -1790,11 +2343,12 @@
             startTimer();
         }
 
-        function changeSeries() {
+        async function changeSeries() {
             document.getElementById('seriesSelector').style.display = 'grid';
+            document.getElementById('student-profile').style.display = 'block';
             document.getElementById('quiz-area').style.display = 'none';
             document.getElementById('results-area').style.display = 'none';
-            renderSeriesSelector();
+            await renderSeriesSelector();
         }
 
         // ============ PRINT MODE — SERIES SELECTION ============
@@ -2128,11 +2682,38 @@
         }
 
         // ============ TEACHER DASHBOARD ============
-        function refreshDashboard() {
-            const allStudents = getAllStudents();
+        async function refreshDashboard() {
             const tbody = document.getElementById('dashboardBody');
 
-            const rows = Object.entries(allStudents).map(([name, data]) => {
+            if (currentTeacher && activeClassId) {
+                // Load from Supabase
+                const results = await loadDashboardResults(activeClassId);
+                const students = {};
+                for (const r of results) {
+                    if (!students[r.student_name]) students[r.student_name] = { bestScores: {}, attempts: 0 };
+                    students[r.student_name].attempts++;
+                    if (!students[r.student_name].bestScores[r.series] || r.score > students[r.student_name].bestScores[r.series]) {
+                        students[r.student_name].bestScores[r.series] = r.score;
+                    }
+                }
+                _cachedDashboardStudents = students;
+                renderDashboardTable(students, tbody);
+            } else {
+                // Fallback: localStorage
+                const allStudents = getAllStudents();
+                const students = {};
+                Object.entries(allStudents).forEach(([name, data]) => {
+                    students[name] = { bestScores: data.bestScores, attempts: data.attempts.length };
+                });
+                _cachedDashboardStudents = students;
+                renderDashboardTable(students, tbody);
+            }
+        }
+
+        let _cachedDashboardStudents = {};
+
+        function renderDashboardTable(students, tbody) {
+            const rows = Object.entries(students).sort((a, b) => a[0].localeCompare(b[0])).map(([name, data]) => {
                 const cells = [name];
                 for (let series = 1; series <= 8; series++) {
                     const bestScore = data.bestScores[series];
@@ -2146,25 +2727,23 @@
                         cells.push('-');
                     }
                 }
-                cells.push(data.attempts.length);
+                cells.push(data.attempts);
                 return `<tr>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`;
             }).join('');
-
-            tbody.innerHTML = rows;
+            tbody.innerHTML = rows || '<tr><td colspan="10" style="text-align:center;color:#999;padding:20px;">Aucun résultat pour le moment</td></tr>';
         }
 
         function exportCSV() {
-            const allStudents = getAllStudents();
-            const rows = [['Élève', 'Série', 'Meilleur score', 'Tentatives', 'Dernière date']];
+            const students = _cachedDashboardStudents;
+            const rows = [['Élève', 'Série 1', 'Série 2', 'Série 3', 'Série 4', 'Série 5', 'Série 6', 'Série 7', 'Série 8', 'Tentatives']];
 
-            Object.entries(allStudents).forEach(([name, data]) => {
-                for (let series = 1; series <= 8; series++) {
-                    const bestScore = data.bestScores[series] || '-';
-                    const attempts = data.attempts.filter(a => a.series === series).length;
-                    const lastAttempt = data.attempts.filter(a => a.series === series).pop();
-                    const lastDate = lastAttempt ? lastAttempt.date : '-';
-                    rows.push([name, `Série ${series}`, bestScore, attempts, lastDate]);
+            Object.entries(students).sort((a, b) => a[0].localeCompare(b[0])).forEach(([name, data]) => {
+                const row = [name];
+                for (let s = 1; s <= 8; s++) {
+                    row.push(data.bestScores[s] !== undefined ? data.bestScores[s] : '-');
                 }
+                row.push(data.attempts);
+                rows.push(row);
             });
 
             const csv = rows.map(r => r.join(',')).join('\n');
@@ -2175,7 +2754,10 @@
         }
 
         // ============ INIT ============
-        document.addEventListener('DOMContentLoaded', generatePrintSheets);
+        document.addEventListener('DOMContentLoaded', () => {
+            generatePrintSheets();
+            checkSession();
+        });
     </script>
 </body>
 </html>
