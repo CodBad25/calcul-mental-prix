@@ -2990,8 +2990,16 @@
 
         let _cachedDashboardStudents = {};
 
+        // Sort "Prénom I." by last name initial then first name
+        function sortByLastName(a, b) {
+            const aParts = a[0].split(' '), bParts = b[0].split(' ');
+            const aLast = (aParts[aParts.length - 1] || '').replace('.', '');
+            const bLast = (bParts[bParts.length - 1] || '').replace('.', '');
+            return aLast.localeCompare(bLast, 'fr') || aParts[0].localeCompare(bParts[0], 'fr');
+        }
+
         function renderDashboardTable(students, tbody) {
-            const rows = Object.entries(students).sort((a, b) => a[0].localeCompare(b[0])).map(([name, data]) => {
+            const rows = Object.entries(students).sort(sortByLastName).map(([name, data]) => {
                 const cells = [name];
                 for (let series = 1; series <= 8; series++) {
                     const bestScore = data.bestScores[series];
@@ -3168,7 +3176,7 @@
             const students = _cachedDashboardStudents;
             const rows = [['Élève', 'Série 1', 'Série 2', 'Série 3', 'Série 4', 'Série 5', 'Série 6', 'Série 7', 'Série 8', 'Tentatives']];
 
-            Object.entries(students).sort((a, b) => a[0].localeCompare(b[0])).forEach(([name, data]) => {
+            Object.entries(students).sort(sortByLastName).forEach(([name, data]) => {
                 const row = [name];
                 for (let s = 1; s <= 8; s++) {
                     row.push(data.bestScores[s] !== undefined ? data.bestScores[s] : '-');
